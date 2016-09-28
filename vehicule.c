@@ -21,10 +21,7 @@ char choixType(){
 char * choixCustom(char type, char * couleur){
 
 
-    if(type=='v'){
-        return strcat(strcat(couleur,"🚘  " ),DEFAULT);
-    }
-    else if(type=='c'){
+    if(type=='c'){
         return strcat(strcat(couleur,"🚍  ") ,DEFAULT);
     }
     return strcat(strcat(couleur,"🚘  " ),DEFAULT);
