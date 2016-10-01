@@ -1,8 +1,17 @@
 #include "couleur.h"
+#include <stdlib.h>
+#include <time.h>
 
+char * DEFAULT="\e[39m";
+char * BLUE="\e[34m";
+char * GREEN="\e[32m";
+char * RED = "\e[31m";
+char * CYAN="\e[96m";
+char * BACKROAD="\e[100m";
+char * BACKDEFAULT="\e[49m";
 
-char *choixCouleur(){
-    srand();
+const char *choixCouleur(){
+    srand(time(NULL));
     int color=(rand()%4);
     switch(color){
         case 0:

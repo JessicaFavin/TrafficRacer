@@ -1,13 +1,13 @@
 
-typedef struct vehicule VEHICULE;
+typedef struct vehicule vehicule;
 struct vehicule{
     int posx;
     int posy;
-    char alignement;
+    //char alignement;
     char type;
-    char couleur [10];
-    char custom [30];
-    char etat;
+    const char * couleur;
+    char * custom;
+    //char etat;
 
 };
 

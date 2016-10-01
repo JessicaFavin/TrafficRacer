@@ -14,13 +14,10 @@ char choixType(){
             return 'c';break;
         default:
             return 'v';
-
     }
 }
 
 char * choixCustom(char type, char * couleur){
-
-
     if(type=='c'){
         return strcat(strcat(couleur,"🚍  ") ,DEFAULT);
     }
