@@ -12,8 +12,9 @@ const char* PALMIER = " 🌴  ";
 const int HAUTEUR_ROUTE = 30;
 const int HAUTEUR_MENU = 9;
 const int LARGEUR_ROUTE = 8;
-const int NB_VOIE_DEFAULT = 5;
+const int NB_VOIE_DEFAULT = 3;
 const char * TAB = "        ";
+const int NB_MAX_CAR = 50;
 
 void print_player(int pos){
     if(pos%3==0)
@@ -100,16 +101,23 @@ vehicule** alloc_road(int nb_l, int nb_c){
     }
     return road;
 }
+
 /*
-vehicule** init_road(int nb_l, int nb_c){
+void addCar(vehicule * v, vehicule * carList){
+
+}
+
+void move_cars(vehicule * carList){
 
 }
 */
+
 int main(int argc, char* argv[]){
     printf("Bienvenue sur traffic racer\n");
     //création de la matrice de la route large de 3 et haute de 30
     vehicule** road = alloc_road(HAUTEUR_ROUTE, NB_VOIE_DEFAULT);
-    //road = init_road(HAUTEUR_ROUTE, NB_VOIE_DEFAULT);
+    //vehicule* carList = malloc(NB_MAX_CAR*sizeof(vehicule));
+    //int nb_cars = 0;
     //vehicule player = {1, 30, 'v', RED, "🚘"};
     vehicule player;
     player.posx = 1;
@@ -124,6 +132,9 @@ int main(int argc, char* argv[]){
     int b = 1;
     while(b){
         char c = key_pressed();
+        //move_cars(carList, nb_cars);
+        //vehicule v = generateCar();
+        //addCar(&v, carList);
         //clean_cursor();
         if(c=='d' && pos_player<NB_VOIE_DEFAULT-1){
             pos_player += 1;
