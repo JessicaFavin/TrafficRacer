@@ -1,5 +1,4 @@
 
-
 extern char * DEFAULT;
 extern char * BLUE;
 extern char * GREEN;

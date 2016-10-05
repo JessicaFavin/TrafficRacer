@@ -23,3 +23,17 @@ char * choixCustom(char type, char * couleur){
     }
     return strcat(strcat(couleur,"🚘  " ),DEFAULT);
 }
+
+vehicule generVehicule(NB_VOIE_DEFAULT){
+    srand(time(NULL));
+    int posX=(rand()%NB_VOIE_DEFAULT);
+    vehicule v;
+    v.posy=0;
+    v.posx=posX;
+    v.type= choixType();
+    v.couleur= choixCouleur();
+    v.custom= choixCustom(v.type ,v.couleur);
+    // v.etat=1; (inutile ?)
+
+    return v;
+}

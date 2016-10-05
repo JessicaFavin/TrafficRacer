@@ -13,3 +13,4 @@ struct vehicule{
 
 char choixType();
 char * choixCustom(char type, char * couleur);
+vehicule generVehicule(NB_VOIE_DEFAULT);
