@@ -10,7 +10,7 @@ char * CYAN="\e[96m";
 char * BACKROAD="\e[100m";
 char * BACKDEFAULT="\e[49m";
 
-const char *choixCouleur(){
+char *choixCouleur(){
     srand(time(NULL));
     int color=(rand()%4);
     switch(color){

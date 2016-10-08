@@ -5,12 +5,12 @@ struct vehicule{
     int posy;
     //char alignement;
     char type;
-    const char * couleur;
+    char * couleur;
     char * custom;
-    //char etat;
+    int etat;
 
 };
 
 char choixType();
 char * choixCustom(char type, char * couleur);
-vehicule generVehicule(NB_VOIE_DEFAULT);
+vehicule generVehicule(int nbVoie);

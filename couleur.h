@@ -7,4 +7,4 @@ extern char * CYAN;
 extern char * BACKROAD;
 extern char * BACKDEFAULT;
 
-const char *choixCouleur();
+char *choixCouleur();

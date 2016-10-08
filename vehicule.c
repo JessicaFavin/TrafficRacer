@@ -3,37 +3,49 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdio.h>
 
 char choixType(){
     srand(time(NULL));
-    int type=(rand()%2);
+    int type = (rand()%2);
     switch (type){
         case 0:
-            return 'v';break;
+            return 'v';
+            break;
         case 1:
-            return 'c';break;
+            return 'c';
+            break;
         default:
             return 'v';
     }
 }
 
 char * choixCustom(char type, char * couleur){
+    char * camion = "🚍  ";
+    char * voiture = "🚘  ";
+    char * res = malloc(100*sizeof(char));
     if(type=='c'){
-        return strcat(strcat(couleur,"🚍  ") ,DEFAULT);
+        strcat(res, couleur);
+        strcat(res, camion);
+        strcat(res, DEFAULT);
+        return res;
     }
-    return strcat(strcat(couleur,"🚘  " ),DEFAULT);
+    strcat(res, couleur);
+    strcat(res, voiture);
+    strcat(res, DEFAULT);
+    return res;
 }
 
-vehicule generVehicule(NB_VOIE_DEFAULT){
+vehicule generVehicule(int nbVoie){
     srand(time(NULL));
-    int posX=(rand()%NB_VOIE_DEFAULT);
+    int posX=(rand()%nbVoie);
     vehicule v;
-    v.posy=0;
-    v.posx=posX;
-    v.type= choixType();
-    v.couleur= choixCouleur();
-    v.custom= choixCustom(v.type ,v.couleur);
-    // v.etat=1; (inutile ?)
+    v.posy = 0;
+    v.posx = posX;
+    v.type = choixType();
+    v.couleur = choixCouleur();
+    v.custom = choixCustom(v.type ,v.couleur);
+     v.etat = 1; //(inutile ?)
 
     return v;
 }
