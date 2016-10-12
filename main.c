@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "keys.h"
 #include "vehicule.h"
 #include "couleur.h"
@@ -10,10 +11,12 @@ const char* VOITURE  = "\e[93m🚖\e[39m";
 const char* COLLISION = "\e[31m💥\e[39m";
 const char* PALMIER = " 🌴  ";
 const int HAUTEUR_ROUTE = 30;
-const int HAUTEUR_MENU = 9;
+const int HAUTEUR_MENU = 8;
+const int LARGEUR_MENU = 24;
 const int LARGEUR_ROUTE = 8;
 const int NB_VOIE_DEFAULT = 3;
-const char * TAB = "        ";
+const char * TAB = "                                            ";
+const int TAB_SIZE = 44+5;
 const int NB_MAX_CAR = 50;
 
 void print_player(int pos){
@@ -26,35 +29,7 @@ void print_player(int pos){
 
 }
 
-/*
-void print_game(int pos){
-    printf("╔══════════════════════╗\n");
-    printf("║SPEED (KM/S) ▶     200║\n");
-    printf("╠══════════════════════╣\n");
-    printf("║SCORE        ▶    1560║\n");
-    printf("╠══════════════════════╣\n");
-    printf("║BEST SCORE   ▶   10840║\n");
-    printf("╚══════════════════════╝\n");
-    int i;
-    for(i=0; i<HAUTEUR_ROUTE-1; i++){
-        if(i%6==0)
-            printf("    %s\e[39m║\e[100m       \e[93m|\e[39m        \e[93m|\e[39m       \e[39m\e[49m║%s\n", PALMIER, PALMIER);
-        else
-            printf("        \e[39m║\e[100m       \e[93m|\e[39m        \e[93m|\e[39m       \e[39m\e[49m║\n");
-    }
-    print_player(pos);
-    printf("\n");
-}
-*/
-
 void print_game(vehicule** road){
-    printf("╔══════════════════════╗\n");
-    printf("║SPEED (KM/S) ▶     200║\n");
-    printf("╠══════════════════════╣\n");
-    printf("║SCORE        ▶    1560║\n");
-    printf("╠══════════════════════╣\n");
-    printf("║BEST SCORE   ▶   10840║\n");
-    printf("╚══════════════════════╝\n");
     int i, j;
     vehicule v;
     for(i=0; i<HAUTEUR_ROUTE; i++){
@@ -67,26 +42,35 @@ void print_game(vehicule** road){
                 v = road[i][j];
                 printf("%s   %s   %s",v.couleur,v.custom, DEFAULT);
             }
-            if(!(j==NB_VOIE_DEFAULT-1)){
-                printf("%s║%s", BACKDEFAULT, BACKROAD);
+            if(!(j==NB_VOIE_DEFAULT-1) && i%2==0){
+                printf("|");
+            } else {
+                printf(" ");
             }
         }
         printf("%s║\n", BACKDEFAULT);
+
     }
+    printf("\033[1;1H");
+    printf("╔══════════════════════╗\n");
+    printf("║SPEED (KM/S) ▶     200║\n");
+    printf("╠══════════════════════╣\n");
+    printf("║SCORE        ▶    1560║\n");
+    printf("╠══════════════════════╣\n");
+    printf("║BEST SCORE   ▶   10840║\n");
+    printf("╚══════════════════════╝\n");
 }
 
 void move_player(int old_pos, int new_pos, vehicule** road, vehicule * player){
-    printf("\033[%d;%dH\e[100m  \e[49m",
-    HAUTEUR_ROUTE+HAUTEUR_MENU+1, (old_pos*LARGEUR_ROUTE)+8+5);
-    printf("\033[%d;%dH\e[100m%s \e[49m",
-    HAUTEUR_ROUTE+HAUTEUR_MENU+1, (new_pos*LARGEUR_ROUTE)+8+5, VOITURE_PLAYER);
-    road[HAUTEUR_ROUTE-1][old_pos].couleur = NULL;
+    printf("\033[%d;%dH\e[100m   \e[49m",
+    player->posy, (old_pos*LARGEUR_ROUTE)+TAB_SIZE);
+    printf("\033[%d;%dH\e[100m%s  \e[49m",
+    player->posy, (new_pos*LARGEUR_ROUTE)+TAB_SIZE, VOITURE_PLAYER);
     player->posx = new_pos;
-    road[HAUTEUR_ROUTE-1][new_pos] = (*player);
 }
 
 void clean_cursor(){
-    printf("\033[%d;1H ",HAUTEUR_ROUTE+HAUTEUR_MENU+2);
+    printf("\033[%d;1H \n",HAUTEUR_ROUTE+HAUTEUR_MENU+2);
 }
 
 void reposition_cursor(){
@@ -165,7 +149,8 @@ void move_cars(vehicule * carList, int nbCars){
 
 
 int main(int argc, char* argv[]){
-    printf("Bienvenue sur traffic racer\n");
+    system("clear");
+    //printf("Bienvenue sur traffic racer\n");
     //création de la matrice de la route large de 3 et haute de 30
     //qui ne sert probablement à rien au final xD
     vehicule** road = alloc_road(HAUTEUR_ROUTE, NB_VOIE_DEFAULT);
@@ -211,6 +196,7 @@ int main(int argc, char* argv[]){
         */
 
         //move_cars(carList, nb_cars);
+
         if(c=='d' && pos_player<NB_VOIE_DEFAULT-1){
             pos_player += 1;
             move_player(pos_player-1, pos_player, road, &player);
@@ -222,7 +208,7 @@ int main(int argc, char* argv[]){
         if(c=='z'){
             b = 0;
         }
-        reposition_cursor();
+        clean_cursor();
     }
 
     return 0;
