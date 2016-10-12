@@ -119,7 +119,9 @@ void draw_car(vehicule * v){
         pour les coordonnées regarde la fonction move_player
         (et ajuste si ça fait de la merde)
     */
-
+    int new_pos=v->posy+1;
+    printf("\033[%d;%dH\e[100m%s \e[49m",new_pos,((v->posx*LARGEUR_ROUTE)+TAB_SIZE),v->custom);// ATTENTION!!!! AJUSTER LES POSITION!
+    v->posy=new_pos;
 }
 
 void clean_car(vehicule * v){
@@ -128,6 +130,8 @@ void clean_car(vehicule * v){
         pareil que pour draw_car sauf qu'au lieu de custom tu ecris un espace
         pour effecer le caractère qui est déjà sur la position
     */
+    int old_pos= v->posy;
+    printf("\033[%d;%dH\e[100m  \e[49m",old_pos,((v->posx*LARGEUR_ROUTE)+TAB_SIZE)); // ATTENTION!!!! AJUSTER LES POSITION!
 
 }
 
@@ -144,6 +148,12 @@ void move_cars(vehicule * carList, int nbCars){
         et du coup avant de bouger les voitures fait un if(voiture.etat==1)
         pour être sûr qu'elle est bien sur la route
     */
+    int i=0;
+    for (i=0;i<nbCars;i++){
+    	vehicule v=carList[i];
+        clean_car(&v);
+        draw_car(&v);
+    }
 
 }
 
