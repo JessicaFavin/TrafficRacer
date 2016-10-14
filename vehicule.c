@@ -6,7 +6,6 @@
 #include <stdio.h>
 
 char choixType(){
-    srand(time(NULL));
     int type = (rand()%2);
     switch (type){
         case 0:
@@ -37,7 +36,6 @@ char * choixCustom(char type, char * couleur){
 }
 
 vehicule generVehicule(int nbVoie){
-    srand(time(NULL));
     int posX=(rand()%nbVoie);
     vehicule v;
     v.posy = 0;
@@ -45,7 +43,7 @@ vehicule generVehicule(int nbVoie){
     v.type = choixType();
     v.couleur = choixCouleur();
     v.custom = choixCustom(v.type ,v.couleur);
-     v.etat = 1; //(inutile ?)
-
+    v.etat = 1; //(inutile ?)
+    v.vitesse = 90;
     return v;
 }

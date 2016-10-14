@@ -11,7 +11,6 @@ char * BACKROAD="\e[100m";
 char * BACKDEFAULT="\e[49m";
 
 char *choixCouleur(){
-    srand(time(NULL));
     int color=(rand()%4);
     switch(color){
         case 0:

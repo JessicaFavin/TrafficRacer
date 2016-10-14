@@ -8,7 +8,7 @@ struct vehicule{
     char * couleur;
     char * custom;
     int etat;
-
+    int vitesse;
 };
 
 char choixType();
