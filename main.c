@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <termios.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "keys.h"
 #include "vehicule.h"
 #include "couleur.h"
@@ -21,6 +24,35 @@ const char * TAB = "                                            ";
 //+2 for the cactuses
 const int TAB_SIZE = 44+5+2;
 const int NB_MAX_CAR = 50;
+char * crash="./Sound/crash.mp3";
+char * klaxon="./Sound/klaxon.mp3";
+char * acceleration="./Sound/acceleration.mp3";
+char * cow="./Sound/cow.mp3";
+char * music=" ";
+char * end=" ";
+char * decompte="./Sound/decompte.mp3";
+char * gameOver=" ";
+
+
+char key_pressed() {
+    struct termios oldterm, newterm;
+    int oldfd;
+    char c, result = 0;
+    tcgetattr(STDIN_FILENO, &oldterm);
+    newterm = oldterm;
+    newterm.c_lflag &= ~ (ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newterm);
+    oldfd = fcntl(STDIN_FILENO, F_GETFL, 0);
+    fcntl(STDIN_FILENO, F_SETFL, oldfd | O_NONBLOCK);
+    c = getchar();
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldterm);
+    fcntl(STDIN_FILENO, F_SETFL, oldfd);
+    if(c!=EOF){
+        ungetc(c, stdin);
+        result = getchar();
+    }
+    return result;
+}
 
 void print_player(int pos){
     if(pos%3==0)
@@ -222,6 +254,7 @@ int main(int argc, char* argv[]){
     nb_cars += 1;
     draw_car(&v4);
     int b = 1;
+    playSound(decompte);
     while(b){
         char c = key_pressed();
         /*
@@ -245,7 +278,7 @@ int main(int argc, char* argv[]){
             b = 0;
         }
         clean_cursor();
-    }
 
+    }
     return 0;
 }

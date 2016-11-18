@@ -1,3 +1,5 @@
+#ifndef COLOR
+#define COLOR
 
 extern char * DEFAULT;
 extern char * BLUE;
@@ -8,3 +10,5 @@ extern char * BACKROAD;
 extern char * BACKDEFAULT;
 
 char *choixCouleur();
+
+#endif

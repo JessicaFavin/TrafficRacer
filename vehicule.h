@@ -1,3 +1,5 @@
+#ifndef VEHICULE
+#define VEHICULE
 
 typedef struct vehicule vehicule;
 struct vehicule{
@@ -14,3 +16,5 @@ struct vehicule{
 char choixType();
 char * choixCustom(char type, char * couleur);
 vehicule generVehicule(int nbVoie);
+
+#endif

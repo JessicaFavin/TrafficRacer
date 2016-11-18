@@ -5,14 +5,13 @@ EXEC=exec
 
 all: $(EXEC)
 
-exec: main.o keys.o  vehicule.o couleur.o
+exec: main.o vehicule.o couleur.o sound.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-main.o: keys.h vehicule.h couleur.h sound.h
+main.o: vehicule.h couleur.h sound.h
 vehicule.o: couleur.h
 couleur.o: couleur.h
-sound.o: sound.h
-	
+sound.o: sound.h	
 %.o: %.c
 	$(CC) -o $@ -c $< $(CFLAGS)
 

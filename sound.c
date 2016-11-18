@@ -1,18 +1,19 @@
-#include "sound.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "sound.h"
 
 
 
 void playSound(char * name ){ // Lance le son en paramétre
 	char * res= malloc(100*sizeof(char));
-	char * play= "play -q ./Sound/";
+	char * play= "play -q ";
 	char * esperluette=" &";
 
 	strcat(res,play);
 	strcat(res,name);
+	printf("%s",res);
 	strcat(res,esperluette);
 
 	system(res);
@@ -20,7 +21,7 @@ void playSound(char * name ){ // Lance le son en paramétre
 
 void killSound(char * name){ // Ferme le processus sox d'un sons en paramétre
 	char * res = malloc(100*sizeof(char));
-	char * comPart1="./killSound.sh ./Sound/";
+	char * comPart1="./killSound.sh ";
 	
 	strcat(res,comPart1);
 	strcat(res,name);

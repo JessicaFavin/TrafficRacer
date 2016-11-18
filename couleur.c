@@ -1,6 +1,6 @@
-#include "couleur.h"
 #include <stdlib.h>
 #include <time.h>
+#include "couleur.h"
 
 char * DEFAULT="\e[39m";
 char * BLUE="\e[34m";
