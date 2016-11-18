@@ -8,8 +8,8 @@
 
 void playSound(char * name ){ // Lance le son en paramétre
 	char * res= malloc(100*sizeof(char));
-	char * play= "play -q ";
-	char * esperluette="&";
+	char * play= "play -q ./Sound/";
+	char * esperluette=" &";
 
 	strcat(res,play);
 	strcat(res,name);
@@ -20,9 +20,8 @@ void playSound(char * name ){ // Lance le son en paramétre
 
 void killSound(char * name){ // Ferme le processus sox d'un sons en paramétre
 	char * res = malloc(100*sizeof(char));
-	char * comPart1="./killSound.sh";
+	char * comPart1="./killSound.sh ./Sound/";
 	
-
 	strcat(res,comPart1);
 	strcat(res,name);
 

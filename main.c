@@ -5,6 +5,7 @@
 #include "keys.h"
 #include "vehicule.h"
 #include "couleur.h"
+#include "sound.h"
 
 
 const char* VOITURE_PLAYER  = "\e[31m🚘\e[39m";
