@@ -13,14 +13,16 @@
 #include "list_car.h"
 
 
-char * crash="./Sound/crash.mp3";
-char * klaxon="./Sound/klaxon.mp3";
-char * acceleration="./Sound/acceleration.mp3";
-char * cow="./Sound/cow.mp3";
-char * music=" ";
-char * end=" ";
-char * decompte="./Sound/decompte.mp3";
-char * gameOver=" ";
+const char * crash="./Sound/crash.mp3";
+const char * klaxon="./Sound/klaxon.mp3";
+const char * acceleration="./Sound/acceleration.mp3";
+const char * cow="./Sound/cow.mp3";
+const char * music=" ";
+const char * end=" ";
+const char * decompte="./Sound/decompte.mp3";
+const char * gameOver=" ";
+const int VIT_MAX_PLAYER = 150;
+const int VIT_MIN_PLAYER = 50;
 
 
 char key_pressed() {
@@ -45,7 +47,7 @@ char key_pressed() {
 
 
 vehicule** alloc_road(int nb_l, int nb_c){
-    vehicule** road = (vehicule**)malloc(nb_l*sizeof(vehicule*));
+    vehicule** road = (vehicule**)malloc((nb_l)*sizeof(vehicule*));
     int i;
     for(i=0; i<nb_l; i++){
         road[i] = (vehicule*)malloc(nb_c*sizeof(vehicule));
@@ -105,9 +107,6 @@ int main(int argc, char* argv[]){
     draw_car(&v4);
     road[v4.posx][v4.posy] = v4;
     int b = 1;
-    playSound(decompte);
-    sleep(3);
-    killSound(decompte);
     unsigned int lastTime = 0, currentTime;
     while(b){
         char c = key_pressed();
@@ -129,14 +128,18 @@ int main(int argc, char* argv[]){
             b = 0;
         }
         if(c=='A'){
-            //tester si vitesse inf ou egale a 150km/h
-            player.vitesse +=10;
-            update_vitesse(&player);
+            //test si vitesse inf a VIT_MAX_PLAYER
+            if (player.vitesse<VIT_MAX_PLAYER){
+               player.vitesse +=10;
+                update_vitesse(&player); 
+            } 
         }
         if(c=='B'){
-            //tester si vitesse sup ou egale a 50km/h
-            player.vitesse -=10;
-            update_vitesse(&player);
+            //test si vitesse sup  a VIT_MIN_PLAYER
+            if (player.vitesse>VIT_MIN_PLAYER){
+                player.vitesse -=10;
+                update_vitesse(&player);
+            }
         }
         clean_cursor();
         currentTime = SDL_GetTicks();

@@ -107,6 +107,7 @@ void draw_car(vehicule * v){
     int new_pos=v->posy;
     printf("\033[%d;%dH\e[100m%s \e[49m",new_pos,((v->posx*LARGEUR_ROUTE)+TAB_SIZE),v->custom);// ATTENTION!!!! AJUSTER LES POSITION!
     //v->posy=new_pos;
+    
 }
 
 void clean_car(vehicule * v){
@@ -134,7 +135,9 @@ int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule *** ro
     int car_removed = 0;
     for (i=0;i<nbCars;i++){
     	vehicule * v= &carList[i];
-        clean_car(v);
+        if ((v->posy)>=0){ // supprime la voiture que si elle est visible
+            clean_car(v);
+        }
         /*
           compare la vitesse à celle du player
           et bouge la voiture en fonction
@@ -142,20 +145,24 @@ int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule *** ro
         if(player->vitesse>v->vitesse){
           //on "descend" la voiture
           v->posy=v->posy+1;
-          road[v->posx][v->posy] = *v;
-      } else if (player->vitesse<v->vitesse) {
+          if((v->posy)>=0){                 // ATTENTION ERREUR SEGMENTATION SI IL Y A PAS CETTE CONDITION
+            road[v->posx][v->posy] = *v;
+            }
+        }else if (player->vitesse<v->vitesse) {
           //on "monte" la voiture
           v->posy=v->posy-1;
-          road[v->posx][v->posy] = *v;
+          if((v->posy)>=0){                // ATTENTION ERREUR SEGMENTATION SI IL Y A PAS CETTE CONDITION
+            road[v->posx][v->posy] = *v;
+            }
         }
         //si la voiture sort de la route
-        if((v->posy)==HAUTEUR_ROUTE+1){
+        if((v->posy)>HAUTEUR_ROUTE){
             removeCar(carList, nbCars);
             car_removed += 1;
-        } else if((v->posy)<0){
-            //do nothing
-        } else {
+        } else if((v->posy)>0){
+            // ne fait rien
             draw_car(v);
+         
         }
     }
     return car_removed;
