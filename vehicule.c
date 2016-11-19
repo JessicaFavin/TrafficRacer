@@ -1,9 +1,9 @@
-#include "vehicule.h"
-#include "couleur.h"
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
+#include "vehicule.h"
+#include "couleur.h"
 
 char choixType(){
     int type = (rand()%2);
@@ -35,6 +35,12 @@ char * choixCustom(char type, char * couleur){
     return res;
 }
 
+int choixVitesse(){
+    //retourne une vitesse comprise entre 50 et 120 km/h
+    int vitesse = ((rand()%8)+5)*10;
+    return vitesse;
+}
+
 vehicule generVehicule(int nbVoie){
     int posX=(rand()%nbVoie);
     vehicule v;
@@ -44,6 +50,6 @@ vehicule generVehicule(int nbVoie){
     v.couleur = choixCouleur();
     v.custom = choixCustom(v.type ,v.couleur);
     v.etat = 1; //(inutile ?)
-    v.vitesse = 90;
+    v.vitesse = choixVitesse();
     return v;
 }

@@ -1,13 +1,13 @@
-#ifndef COLOR
-#define COLOR
+#ifndef COLOR_H
+#define COLOR_H
 
-extern char * DEFAULT;
-extern char * BLUE;
-extern char * GREEN;
-extern char * RED;
-extern char * CYAN;
-extern char * BACKROAD;
-extern char * BACKDEFAULT;
+char * DEFAULT;
+char * BLUE;
+char * GREEN;
+char * RED;
+char * CYAN;
+char * BACKROAD;
+char * BACKDEFAULT;
 
 char *choixCouleur();
 
