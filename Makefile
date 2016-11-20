@@ -6,10 +6,11 @@ EXEC=exec
 
 all: $(EXEC)
 
-exec: main.o vehicule.o couleur.o sound.o display.o list_car.o
-	$(CC) -o $@ $^ $(LDFLAGS) $(SDLFLAGS) $(MATHFLAGS)
+exec: main.o game.o display.o vehicule.o couleur.o sound.o list_car.o
+	$(CC) -o $@ $^ $(CFLAGS) $(SDLFLAGS) $(MATHFLAGS)
 
-main.o: vehicule.h couleur.h sound.h
+main.o: game.h
+game.o: display.h vehicule.h couleur.h sound.h list_car.h
 vehicule.o: couleur.h
 couleur.o: couleur.h
 sound.o: sound.h

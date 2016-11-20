@@ -6,7 +6,8 @@ const int NB_VOIE_DEFAULT;
 const int NB_MAX_CAR;
 
 
-void print_road();
+int get_size_int(int entier);
+void print_road(int best);
 void update_score(int score, int size_score);
 void update_best_score(int best, int size_best);
 void update_vitesse(vehicule * player);
