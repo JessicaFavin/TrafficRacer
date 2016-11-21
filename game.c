@@ -41,17 +41,10 @@ char key_pressed() {
 }
 
 
-vehicule** alloc_road(int nb_l, int nb_c){
+vehicule** alloc_road(int nb_c, int nb_l){
     vehicule** road = (vehicule**)malloc((nb_l)*sizeof(vehicule*));
     int i,j;
-    vehicule ghost;
-    ghost.posx = 1;
-    ghost.posy = 0;
-    ghost.type = 'v';
-    ghost.couleur = BLUE;
-    ghost.custom = "🚘";
-    ghost.vitesse = 100;
-    ghost.ghost=1;
+    vehicule ghost = generGhost();
     for(i=0; i<nb_l; i++){
         road[i] = (vehicule*)malloc(nb_c*sizeof(vehicule));
     }
@@ -208,7 +201,8 @@ void IA_mode(int best){
             update_panel(&IA, score, size_score, best);
             lastTime = currentTime;
             clean_cursor();
-            printf("%d",road[1][15].vitesse);
+            printf("etat: %d ",road[1][15].etat);
+            printf("vit: %d           ",road[1][15].vitesse);
         }
-    }    
-}   
+    }
+}

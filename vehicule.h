@@ -5,7 +5,6 @@ typedef struct vehicule vehicule;
 struct vehicule{
     int posx;
     int posy;
-    //char alignement;
     char type;
     char * couleur;
     char * custom;
@@ -18,5 +17,6 @@ char choixType();
 char * choixCustom(char type, char * couleur);
 int choixVitesse();
 vehicule generVehicule(int nbVoie);
+vehicule generGhost();
 
 #endif

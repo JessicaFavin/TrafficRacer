@@ -150,19 +150,13 @@ int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule *** ro
     int i=0;
     vehicule ** road = *road_pointer;
     int car_removed = 0;
-    vehicule g;
-    vehicule * ghost=&g;
-    ghost->ghost=1;
-    ghost->posx = 1;
-    ghost->posy = 0;
-    ghost->type = 'v';
-    ghost->couleur = BLUE;
-    ghost->custom = "🚘";
-    ghost->vitesse = 0; // vehicule phantom obligatoire pour le move_IA)
+    vehicule * ghost =  malloc(sizeof(vehicule));
+    *ghost = generGhost();
     for (i=0;i<nbCars;i++){
     	vehicule * v = &carList[i];
         if ((v->posy)>=0 && (v->posy)<=HAUTEUR_ROUTE){ // supprime la voiture que si elle est visible
             clean_car(v);
+            road[v->posx][(v->posy)] = *ghost;
         }
         /*
           compare la vitesse à celle du player
@@ -170,14 +164,12 @@ int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule *** ro
         */
         if(player->vitesse>v->vitesse){
           //on "descend" la voiture
-            road[v->posx][(v->posy)] = *ghost;   
             v->posy=v->posy+1;
             if((v->posy)>=0 && (v->posy)<=HAUTEUR_ROUTE){                 // ATTENTION ERREUR SEGMENTATION SI IL Y A PAS CETTE CONDITION
                 road[v->posx][v->posy] = *v;
             }
         }else if (player->vitesse<v->vitesse) {
           //on "monte" la voiture
-          road[v->posx][(v->posy)] = *ghost;
           v->posy=v->posy-1;
           if((v->posy)>=0 && (v->posy)<=HAUTEUR_ROUTE){                // ATTENTION ERREUR SEGMENTATION SI IL Y A PAS CETTE CONDITION
             road[v->posx][v->posy] = *v;
@@ -200,18 +192,11 @@ void move_IA(vehicule * IA, vehicule *** road_pointer){          // ATTENTION ER
     int scan_height=1;
 
     vehicule ** road = *road_pointer;
-    vehicule ghost;
-    ghost.posx = 1;
-    ghost.posy = 0;
-    ghost.type = 'v';
-    ghost.couleur = BLUE;
-    ghost.custom = "🚘";
-    ghost.vitesse = 0;
-    ghost.ghost=1;
+    vehicule ghost = generGhost();
 
 
-    if(road[IA->posx][(IA->posy)-scan_height].ghost != ghost.ghost){
-        IA->vitesse=VIT_MAX_IA;    
+    if(road[IA->posx][(IA->posy)-scan_height].ghost == ghost.ghost){
+        IA->vitesse=VIT_MAX_IA;
     }
     else{
         IA->vitesse=road[IA->posx][(IA->posy)-scan_height].vitesse;
@@ -240,5 +225,5 @@ void move_IA(vehicule * IA, vehicule *** road_pointer){          // ATTENTION ER
 
         }
     }*/
-    
+
 }

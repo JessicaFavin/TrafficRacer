@@ -30,7 +30,7 @@ int get_best_score_IA(){
 int main(int argc, char* argv[]){
     system("clear");
     //faire un menu pour choisir le mode
-
+    
     int choice;
     choice = 2;
     //------------------------------MODE PLAYER---------------------------------
@@ -47,6 +47,5 @@ int main(int argc, char* argv[]){
     if(choice==3){
         exit(0);
     }
-
     return 0;
 }
