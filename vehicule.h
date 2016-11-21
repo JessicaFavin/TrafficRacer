@@ -11,6 +11,7 @@ struct vehicule{
     char * custom;
     int etat;
     int vitesse;
+    int ghost;
 };
 
 char choixType();

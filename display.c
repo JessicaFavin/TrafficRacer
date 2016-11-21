@@ -15,6 +15,9 @@ const char * TAB = "                                            ";
 //+2 for the cactuses
 const int TAB_SIZE = 44+5+2;
 const int NB_MAX_CAR = 50;
+const int VIT_MAX_IA = 150;
+const int VIT_MIN_IA = 50;
+
 
 void clean_cursor(){
     printf("\033[%d;1H \n",HAUTEUR_ROUTE+2);
@@ -26,7 +29,7 @@ void reposition_cursor(){
 
 int get_size_int(int entier){
     if(entier==0){
-        return 0;
+        return 1;
     }
     return floor(log10(abs(entier))) + 1;
 }
@@ -147,6 +150,15 @@ int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule *** ro
     int i=0;
     vehicule ** road = *road_pointer;
     int car_removed = 0;
+    vehicule g;
+    vehicule * ghost=&g;
+    ghost->ghost=1;
+    ghost->posx = 1;
+    ghost->posy = 0;
+    ghost->type = 'v';
+    ghost->couleur = BLUE;
+    ghost->custom = "🚘";
+    ghost->vitesse = 0; // vehicule phantom obligatoire pour le move_IA)
     for (i=0;i<nbCars;i++){
     	vehicule * v = &carList[i];
         if ((v->posy)>=0 && (v->posy)<=HAUTEUR_ROUTE){ // supprime la voiture que si elle est visible
@@ -158,18 +170,21 @@ int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule *** ro
         */
         if(player->vitesse>v->vitesse){
           //on "descend" la voiture
-          v->posy=v->posy+1;
-          if((v->posy)>=0 && (v->posy)<=HAUTEUR_ROUTE){                 // ATTENTION ERREUR SEGMENTATION SI IL Y A PAS CETTE CONDITION
-            road[v->posx][v->posy] = *v;
+            road[v->posx][(v->posy)] = *ghost;   
+            v->posy=v->posy+1;
+            if((v->posy)>=0 && (v->posy)<=HAUTEUR_ROUTE){                 // ATTENTION ERREUR SEGMENTATION SI IL Y A PAS CETTE CONDITION
+                road[v->posx][v->posy] = *v;
             }
         }else if (player->vitesse<v->vitesse) {
           //on "monte" la voiture
+          road[v->posx][(v->posy)] = *ghost;
           v->posy=v->posy-1;
           if((v->posy)>=0 && (v->posy)<=HAUTEUR_ROUTE){                // ATTENTION ERREUR SEGMENTATION SI IL Y A PAS CETTE CONDITION
             road[v->posx][v->posy] = *v;
             }
         }
         if((v->posy)>HAUTEUR_ROUTE){
+            v->etat=0;
             removeCar(carList, nbCars);
             car_removed += 1;
         } else if((v->posy)>0 && (v->posy)<=HAUTEUR_ROUTE){
@@ -179,4 +194,51 @@ int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule *** ro
     }
     return car_removed;
 
+}
+
+void move_IA(vehicule * IA, vehicule *** road_pointer){          // ATTENTION ERREUR SEGMENTATION + move_player (ne fonctionne pas)
+    int scan_height=1;
+
+    vehicule ** road = *road_pointer;
+    vehicule ghost;
+    ghost.posx = 1;
+    ghost.posy = 0;
+    ghost.type = 'v';
+    ghost.couleur = BLUE;
+    ghost.custom = "🚘";
+    ghost.vitesse = 0;
+    ghost.ghost=1;
+
+
+    if(road[IA->posx][(IA->posy)-scan_height].ghost != ghost.ghost){
+        IA->vitesse=VIT_MAX_IA;    
+    }
+    else{
+        IA->vitesse=road[IA->posx][(IA->posy)-scan_height].vitesse;
+    }
+    /*if(road[IA->posx][(IA->posy)-(scan_height+1)].ghost != ghost.ghost) {
+        if(IA->posx==1){
+            IA->posx=(IA->posx)+1;
+            //move_player((IA->posx)-1,IA->posx,IA);
+        }
+        if(IA->posx==2){
+            if(road[(IA->posx)+1][(IA->posy)-(scan_height+1)].ghost == ghost.ghost){
+                IA->posx=(IA->posx)+1;
+                //move_player((IA->posx)-1,IA->posx,IA);
+            }
+            else if(road[(IA->posx)-1][(IA->posy)-(scan_height+1)].ghost == ghost.ghost){
+                IA->posx=(IA->posx)-1;
+                //move_player((IA->posx)+1,IA->posx,IA);
+            }
+
+        }
+        if(IA->posx==3){
+            IA->posx=(IA->posx)-1;
+            //move_player((IA->posx)+1,IA->posx,IA);
+
+
+
+        }
+    }*/
+    
 }

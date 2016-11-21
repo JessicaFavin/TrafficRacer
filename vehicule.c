@@ -49,7 +49,8 @@ vehicule generVehicule(int nbVoie){
     v.type = choixType();
     v.couleur = choixCouleur();
     v.custom = choixCustom(v.type ,v.couleur);
-    v.etat = 1; //(inutile ?)
+    v.etat = 1; 
     v.vitesse = choixVitesse();
+    v.ghost=0;
     return v;
 }

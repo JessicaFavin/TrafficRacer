@@ -32,7 +32,7 @@ int main(int argc, char* argv[]){
     //faire un menu pour choisir le mode
 
     int choice;
-    choice = 1;
+    choice = 2;
     //------------------------------MODE PLAYER---------------------------------
     if(choice==1){
         int best = get_best_score();
