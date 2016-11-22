@@ -49,6 +49,22 @@ int get_size_int(int entier){
     return floor(log10(abs(entier))) + 1;
 }
 
+void print_controls(){
+    printf("\033[1;80H╔══════════════════════╗\n");
+    printf("\033[2;80H║Accélerer    ▶ z ou ↑ ║\n");
+    printf("\033[3;80H╠══════════════════════╣\n");
+    printf("\033[4;80H║Ralentir     ▶ s ou ↓ ║\n");
+    printf("\033[5;80H╠══════════════════════╣\n");
+    printf("\033[6;80H║Gauche       ▶ q ou ← ║\n");
+    printf("\033[7;80H╠══════════════════════╣\n");
+    printf("\033[8;80H║Droite       ▶ d ou → ║\n");
+    printf("\033[9;80H╠══════════════════════╣\n");
+    printf("\033[10;80H║Klaxonner    ▶ k      ║\n");
+    printf("\033[11;80H╠══════════════════════╣\n");
+    printf("\033[12;80H║Quitter      ▶ l      ║\n");
+    printf("\033[13;80H╚══════════════════════╝\n");
+}
+
 void print_road(int best){
     int i, j;
     for(i=0; i<HAUTEUR_ROUTE; i++){
@@ -92,6 +108,7 @@ void print_road(int best){
     }
     printf("║\n");
     printf("╚══════════════════════╝\n");
+    print_controls();
 }
 
 void update_score(int score, int size_score){
@@ -155,7 +172,7 @@ void clean_car(vehicule * v){
 
 }
 
-void move_player(int old_pos, int new_pos, vehicule * player){
+void move_player(int new_pos, vehicule * player){
     clean_car(player);
     player->posx = new_pos;
     draw_car(player);
@@ -207,28 +224,28 @@ void move_IA(vehicule * IA, vehicule *** road_pointer){          // ATTENTION ER
     int scan_height=1;
 
     vehicule ** road = *road_pointer;
-    vehicule ghost = generGhost();
+    //vehicule ghost = generGhost();
 
     if(road[IA->posx][34].ghost != 1) {
         IA->vitesse=road[IA->posx][(IA->posy)-scan_height].vitesse;
         if(IA->posx==0){
-            move_player(0,1,IA);
+            move_player(1,IA);
             road[IA->posx][IA->posy]=*IA;
         }
         else if(IA->posx==1){
 
             if(road[2][34].ghost == 1 && road[2][33].ghost == 1){
-                move_player(1,2,IA);
+                move_player(2,IA);
                 road[IA->posx][IA->posy]=*IA;
             }
             else /*if((road[IA->posx-1][(IA->posy)-(scan_height)].ghost == 1 && road[IA->posx-1][(IA->posy)-(scan_height+1)].ghost == 1))*/{
-                move_player(IA->posx,IA->posx-1,IA);
+                move_player(IA->posx-1,IA);
                 road[IA->posx][IA->posy]=*IA;
             }
 
         }
         else if(IA->posx==2){
-            move_player(IA->posx,IA->posx-1,IA);
+            move_player(IA->posx-1,IA);
             road[IA->posx][IA->posy]=*IA;
         }
     }

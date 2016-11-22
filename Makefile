@@ -7,6 +7,10 @@ EXEC=exec
 
 all: $(EXEC)
 
+run:
+	./$(EXEC)
+
+
 exec: main.o game.o display.o vehicule.o couleur.o sound.o list_car.o
 	$(CC) -o $@ $^ $(CFLAGS) $(SDLFLAGS) $(MATHFLAGS) $(NCURSESFLAGS)
 
@@ -18,7 +22,7 @@ sound.o: sound.h
 display.o: display.h vehicule.h couleur.h list_car.h
 list_car.o: list_car.h vehicule.h
 %.o: %.c
-	$(CC) -o $@ -c $< $(CFLAGS)
+	$(CC) -o $@ -c $< $(CFLAGS) $(SDLFLAGS)
 
 clean:
 	rm -rf *.o

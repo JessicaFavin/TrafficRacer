@@ -12,7 +12,7 @@ void update_score(int score, int size_score);
 void update_best_score(int best, int size_best);
 void update_vitesse(vehicule * player);
 void update_panel(vehicule * player, int score, int size_score, int best_score);
-void move_player(int old_pos, int new_pos, vehicule * player);
+void move_player(int new_pos, vehicule * player);
 void draw_car(vehicule * v);
 void clean_car(vehicule * v);
 int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule *** road_pointer);

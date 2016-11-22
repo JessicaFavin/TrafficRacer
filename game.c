@@ -60,13 +60,57 @@ int more_cars( vehicule* carList, int nb_cars, vehicule ** road){
     int random = (rand()%(NB_VOIE_DEFAULT-1)), car_added = 0, i;
     vehicule v;
     for(i=0; i<random; i++){
-        v = generVehicule(NB_VOIE_DEFAULT);
-        addCar(&v, carList, nb_cars);
-        car_added += 1;
-        draw_car(&v);
-        road[v.posx][v.posy] = v;
+        if(nb_cars+car_added<NB_MAX_CAR){
+            v = generVehicule(NB_VOIE_DEFAULT);
+            //doit vérifier que la case de la voiture est bien libre
+            //sinon soit en génère une autre tant que sa case n'est pas libre
+            //soit change le posx pour une case libre
+            addCar(&v, carList, nb_cars);
+            car_added += 1;
+            draw_car(&v);
+            road[v.posx][v.posy] = v;
+        }
     }
     return car_added;
+}
+
+int scoring(int car_passed, int vitesse){
+    int points = 0;
+    points = car_passed*vitesse/30;
+    return points;
+}
+
+
+
+int player_actions(char c, vehicule * player){
+    int b = 1;
+    if((c=='d'||c=='C') && player->posx<NB_VOIE_DEFAULT-1){
+        move_player(player->posx+1, player);
+    }
+    if((c=='q'||c=='D') && player->posx>0){
+        move_player(player->posx-1, player);
+    }
+    if(c=='l'){
+        b = 0;
+    }
+    if(c=='A' || c=='z'){
+        //test si vitesse inf a VIT_MAX_PLAYER
+        if (player->vitesse<VIT_MAX_PLAYER){
+           player->vitesse +=10;
+            update_vitesse(player);
+        }
+    }
+    if(c=='B' || c=='s'){
+        //test si vitesse sup  a VIT_MIN_PLAYER
+        if (player->vitesse>VIT_MIN_PLAYER){
+            player->vitesse -=10;
+            update_vitesse(player);
+        }
+    }
+    if(c=='k'){
+        //launch(klaxon);
+    }
+    return b;
 }
 
 
@@ -78,44 +122,19 @@ void player_mode(int best){
     vehicule player = generPlayer();
     road[player.posx][player.posy] = player;
     print_road(best);
-    move_player(0, player.posx, &player);
-    int pos_player = NB_VOIE_DEFAULT/2;
+    move_player(player.posx, &player);
     int b = 1;
     unsigned int lastTime = 0, currentTime;
     while(b){
         char c = key_pressed();
-        if(c=='d' && pos_player<NB_VOIE_DEFAULT-1){
-            pos_player += 1;
-            move_player(pos_player-1, pos_player, &player);
-        }
-        if(c=='q' && pos_player>0){
-            pos_player-=1;
-            move_player(pos_player+1, pos_player, &player);
-        }
-        if(c=='z'){
-            b = 0;
-        }
-        if(c=='A'){
-            //test si vitesse inf a VIT_MAX_PLAYER
-            if (player.vitesse<VIT_MAX_PLAYER){
-               player.vitesse +=10;
-                update_vitesse(&player);
-            }
-        }
-        if(c=='B'){
-            //test si vitesse sup  a VIT_MIN_PLAYER
-            if (player.vitesse>VIT_MIN_PLAYER){
-                player.vitesse -=10;
-                update_vitesse(&player);
-            }
-        }
+        b = player_actions(c, &player);
         clean_cursor();
         currentTime = SDL_GetTicks();
         if (currentTime > lastTime + 199) {
             int car_removed = move_cars(carList, nb_cars, &player, &road);
             int car_added = more_cars(carList, nb_cars, road);
             nb_cars += car_added;
-            score += car_removed*5;
+            score += scoring(car_removed, player.vitesse);
             nb_cars -= car_removed;
             size_score = get_size_int(score);
             update_panel(&player, score, size_score, best);
@@ -145,8 +164,8 @@ void IA_mode(int best){
     IA.ghost=12;
     road[IA.posx][IA.posy] = IA;
     print_road(best);
-    move_player(0, IA.posx, &IA);
-    int pos_IA = NB_VOIE_DEFAULT/2;
+    move_player(IA.posx, &IA);
+    //int pos_IA = NB_VOIE_DEFAULT/2;
 /*
     vehicule v = generVehicule(NB_VOIE_DEFAULT);
     addCar(&v, carList, nb_cars);
@@ -215,7 +234,7 @@ void IA_mode(int best){
             move_IA(&IA,&road);
             int car_removed = move_cars(carList, nb_cars, &IA, &road);
             int car_added = more_cars(carList, nb_cars, road);
-            score += car_removed*5;
+            score += scoring(car_removed, IA.vitesse);
             nb_cars += car_added;
             nb_cars -= car_removed;
             size_score = get_size_int(score);
