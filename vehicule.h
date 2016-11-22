@@ -18,5 +18,6 @@ char * choixCustom(char type, char * couleur);
 int choixVitesse();
 vehicule generVehicule(int nbVoie);
 vehicule generGhost();
+vehicule generPlayer();
 
 #endif

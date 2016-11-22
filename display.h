@@ -19,5 +19,5 @@ int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule *** ro
 void clean_cursor();
 void reposition_cursor();
 void move_IA(vehicule * IA, vehicule *** road_pointer);
-
+int launch_menu();
 #endif

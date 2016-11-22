@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "vehicule.h"
 #include "couleur.h"
+#include "display.h"
 
 char choixType(){
     int type = (rand()%2);
@@ -44,7 +45,7 @@ int choixVitesse(){
 vehicule generVehicule(int nbVoie){
     int posX=(rand()%nbVoie);
     vehicule v;
-    v.posy = 0;
+    v.posy = 1;
     v.posx = posX;
     v.type = choixType();
     v.couleur = choixCouleur();
@@ -53,6 +54,17 @@ vehicule generVehicule(int nbVoie){
     v.vitesse = choixVitesse();
     v.ghost = 0;
     return v;
+}
+
+vehicule generPlayer(){
+    vehicule player;
+    player.posx = NB_VOIE_DEFAULT/2;
+    player.posy = HAUTEUR_ROUTE;
+    player.type = 'v';
+    player.couleur = RED;
+    player.custom = choixCustom('v', RED);
+    player.vitesse = 100;
+    return player;
 }
 
 vehicule generGhost(){

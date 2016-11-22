@@ -2,9 +2,24 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <ncurses.h>
 #include "vehicule.h"
 #include "couleur.h"
 #include "list_car.h"
+
+#define WIDTH 20
+#define HEIGHT 7
+
+int startx = 0;
+int starty = 0;
+
+char *choices[] = {
+			"Mode manuel",
+			"Mode automatique",
+			"Quitter"
+		  };
+int n_choices = sizeof(choices) / sizeof(char *);
+
 
 const int HAUTEUR_ROUTE = 35;
 const int HAUTEUR_MENU = 8;
@@ -204,11 +219,11 @@ void move_IA(vehicule * IA, vehicule *** road_pointer){          // ATTENTION ER
 
             if(road[2][34].ghost == 1 && road[2][33].ghost == 1){
                 move_player(1,2,IA);
-                road[IA->posx][IA->posy]=*IA; 
+                road[IA->posx][IA->posy]=*IA;
             }
             else /*if((road[IA->posx-1][(IA->posy)-(scan_height)].ghost == 1 && road[IA->posx-1][(IA->posy)-(scan_height+1)].ghost == 1))*/{
                 move_player(IA->posx,IA->posx-1,IA);
-                road[IA->posx][IA->posy]=*IA;      
+                road[IA->posx][IA->posy]=*IA;
             }
 
         }
@@ -220,6 +235,77 @@ void move_IA(vehicule * IA, vehicule *** road_pointer){          // ATTENTION ER
     if(road[IA->posx][IA->posy-scan_height].vitesse <= 50){
         IA->vitesse=150;
     }
-    
+}
 
+void print_menu(WINDOW *menu_win, int highlight)
+{
+	int x, y, i;
+
+	x = 2;
+	y = 2;
+	box(menu_win, 0, 0);
+	for(i = 0; i < n_choices; ++i)
+	{	if(highlight == i + 1) /* High light the present choice */
+		{	wattron(menu_win, A_REVERSE);
+			mvwprintw(menu_win, y, x, "%s", choices[i]);
+			wattroff(menu_win, A_REVERSE);
+		}
+		else
+			mvwprintw(menu_win, y, x, "%s", choices[i]);
+		++y;
+	}
+	wrefresh(menu_win);
+}
+
+int launch_menu() {
+    WINDOW *menu_win;
+	int highlight = 1;
+	int choice = 0;
+	int c;
+
+	initscr();
+	clear();
+	noecho();
+	cbreak();	/* Line buffering disabled. pass on everything */
+    int row,col;
+    getmaxyx(stdscr,row,col);
+    //width of game = 76
+	startx = (col/3) - (WIDTH/2);
+	starty = (row/3) - (HEIGHT/2);
+
+	menu_win = newwin(HEIGHT, WIDTH, starty, startx);
+	keypad(menu_win, TRUE);
+    mvprintw(3,0,"                     ______              ____ ____ _          ____                          \n                    /_  __/_____ ____ _ / __// __/(_)_____   / __ \\ ____ _ _____ ___   _____\n                     / /  / ___// __ `// /_ / /_ / // ___/  / /_/ // __ `// ___// _ \\ / ___/\n                    / /  / /   / /_/ // __// __// // /__   / _, _// /_/ // /__ /  __// /    \n                   /_/  /_/    \\__,_//_/  /_/  /_/ \\___/  /_/ |_| \\__,_/ \\___/ \\___//_/     \n                    Use arrow keys to go up and down, Press enter to select a choice");
+	refresh();
+	print_menu(menu_win, highlight);
+	while(1)
+	{	c = wgetch(menu_win);
+		switch(c)
+		{	case KEY_UP:
+				if(highlight == 1)
+					highlight = n_choices;
+				else
+					--highlight;
+				break;
+			case KEY_DOWN:
+				if(highlight == n_choices)
+					highlight = 1;
+				else
+					++highlight;
+				break;
+			case 10:
+				choice = highlight;
+				break;
+			default:
+				break;
+		}
+		print_menu(menu_win, highlight);
+		if(choice != 0)	/* User did a choice come out of the infinite loop */
+			break;
+	}
+    mvprintw(23, 0, "You chose choice %d with choice string %s\n", choice, choices[choice - 1]);
+	clrtoeol();
+	refresh();
+	endwin();
+	return choice;
 }
