@@ -18,5 +18,6 @@ void clean_car(vehicule * v);
 int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule *** road_pointer);
 void clean_cursor();
 void reposition_cursor();
+void move_IA(vehicule * IA, vehicule *** road_pointer);
 
 #endif

@@ -42,14 +42,14 @@ char key_pressed() {
 
 
 vehicule** alloc_road(int nb_c, int nb_l){
-    vehicule** road = (vehicule**)malloc((nb_l)*sizeof(vehicule*));
+    vehicule** road = (vehicule**)malloc((nb_c)*sizeof(vehicule*));
     int i,j;
     vehicule ghost = generGhost();
     for(i=0; i<nb_l; i++){
-        road[i] = (vehicule*)malloc(nb_c*sizeof(vehicule));
+        road[i] = (vehicule*)malloc(nb_l*sizeof(vehicule));
     }
-    for(i=0;i<nb_l;i++){
-        for(j=0;j<nb_c;j++){
+    for(i=0;i<nb_c;i++){
+        for(j=0;j<nb_l;j++){
             road[i][j]=ghost;
         }
     }
@@ -59,7 +59,7 @@ vehicule** alloc_road(int nb_c, int nb_l){
 
 void player_mode(int best){
     srand(time(NULL));
-    vehicule** road = alloc_road(HAUTEUR_ROUTE, NB_VOIE_DEFAULT);
+    vehicule** road = alloc_road(NB_VOIE_DEFAULT, HAUTEUR_ROUTE);
     vehicule* carList = malloc(NB_MAX_CAR*sizeof(vehicule));
     int nb_cars = 0, score=0, size_score = 1;
     vehicule player;
@@ -128,31 +128,37 @@ void player_mode(int best){
         clean_cursor();
         currentTime = SDL_GetTicks();
         if (currentTime > lastTime + 399) {
-          int car_removed = move_cars(carList, nb_cars, &player, &road);
-          score += car_removed*5;
-          nb_cars -= car_removed;
-          size_score = get_size_int(score);
-          update_panel(&player, score, size_score, best);
-          lastTime = currentTime;
+            int car_removed = move_cars(carList, nb_cars, &player, &road);
+            score += car_removed*5;
+            nb_cars -= car_removed;
+            size_score = get_size_int(score);
+            update_panel(&player, score, size_score, best);
+            lastTime = currentTime;
+            clean_cursor();
+            printf("etat: %d ",road[1][34].ghost);
+            printf("vit: %d           ",road[1][34].vitesse);
         }
     }
 }
 
 void IA_mode(int best){
+
     //printf("This mode is not implemented yet.\nCome back later. Bye!\n");
     //printf("best score for IA: %d\n",best);
     srand(time(NULL));
-    vehicule** road = alloc_road(HAUTEUR_ROUTE, NB_VOIE_DEFAULT);
+    vehicule** road = alloc_road(NB_VOIE_DEFAULT, HAUTEUR_ROUTE);
     vehicule* carList = malloc(NB_MAX_CAR*sizeof(vehicule));
+    vehicule * ghost =  malloc(sizeof(vehicule));
+     *ghost = generGhost();
     int nb_cars = 0, score=0, size_score = 1;
     vehicule IA;
-    IA.posx = NB_VOIE_DEFAULT/2;
+    IA.posx = 1;
     IA.posy = HAUTEUR_ROUTE;
     IA.type = 'v';
     IA.couleur = BLUE;
     IA.custom = "🚘";
-    IA.vitesse = 100;
-    IA.ghost=0;
+    IA.vitesse = 150;
+    IA.ghost=12;
     road[IA.posx][IA.posy] = IA;
     print_road(best);
     move_player(0, IA.posx, &IA);
@@ -163,25 +169,52 @@ void IA_mode(int best){
     draw_car(&v);
     road[v.posx][v.posy] = v;
     vehicule v2 = generVehicule(NB_VOIE_DEFAULT);
-    v2.posy = 2;
+    v2.posy = 12;
+    v2.posx = 1;
     addCar(&v2, carList, nb_cars);
     nb_cars += 1;
     draw_car(&v2);
     road[v2.posx][v2.posy] = v2;
     vehicule v3 = generVehicule(NB_VOIE_DEFAULT);
     v3.posy = 7;
+    v3.posx = 1;
     addCar(&v3, carList, nb_cars);
     nb_cars += 1;
     draw_car(&v3);
     road[v3.posx][v3.posy] = v3;
     vehicule v4 = generVehicule(NB_VOIE_DEFAULT);
-    v4.posy = 9;
+    v4.posy = 8;
+    v4.posx = 2;
     addCar(&v4, carList, nb_cars);
     nb_cars += 1;
     draw_car(&v4);
     road[v4.posx][v4.posy] = v4;
+    vehicule v5 = generVehicule(NB_VOIE_DEFAULT);
+    v5.posy = 9;
+    v5.posx = 2;
+    addCar(&v5, carList, nb_cars);
+    nb_cars += 1;
+    draw_car(&v5);
+    road[v5.posx][v5.posy] = v4;
     int b = 1;
     unsigned int lastTime = 0, currentTime;
+    vehicule v6 = generVehicule(NB_VOIE_DEFAULT);
+    v6.posy = 5;
+    v6.posx = 1;
+    addCar(&v6, carList, nb_cars);
+    nb_cars += 1;
+    draw_car(&v6);
+    road[v6.posx][v6.posy] = v4;
+    vehicule v7 = generVehicule(NB_VOIE_DEFAULT);
+    v7.posy = 2;
+    v7.posx = 0;
+    addCar(&v7, carList, nb_cars);
+    nb_cars += 1;
+    draw_car(&v7);
+    road[v7.posx][v7.posy] = v4;
+    road[0][35]=*ghost;
+    road[1][35]=*ghost;
+    road[2][35]=*ghost;
     while(b){
         char c = key_pressed();
         if(c=='z'){
@@ -191,9 +224,9 @@ void IA_mode(int best){
             update_vitesse(&IA);;
         }
         clean_cursor();
-        move_IA(&IA,&road);
         currentTime = SDL_GetTicks();
-        if (currentTime > lastTime + 399) {
+        if (currentTime > lastTime + 100) {
+            move_IA(&IA,&road);
             int car_removed = move_cars(carList, nb_cars, &IA, &road);
             score += car_removed*5;
             nb_cars -= car_removed;
@@ -201,8 +234,6 @@ void IA_mode(int best){
             update_panel(&IA, score, size_score, best);
             lastTime = currentTime;
             clean_cursor();
-            printf("etat: %d ",road[1][15].etat);
-            printf("vit: %d           ",road[1][15].vitesse);
         }
     }
 }

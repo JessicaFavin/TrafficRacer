@@ -194,36 +194,32 @@ void move_IA(vehicule * IA, vehicule *** road_pointer){          // ATTENTION ER
     vehicule ** road = *road_pointer;
     vehicule ghost = generGhost();
 
-
-    if(road[IA->posx][(IA->posy)-scan_height].ghost == ghost.ghost){
-        IA->vitesse=VIT_MAX_IA;
-    }
-    else{
+    if(road[IA->posx][34].ghost != 1) {
         IA->vitesse=road[IA->posx][(IA->posy)-scan_height].vitesse;
+        if(IA->posx==0){
+            move_player(0,1,IA);
+            road[IA->posx][IA->posy]=*IA;
+        }
+        else if(IA->posx==1){
+
+            if(road[2][34].ghost == 1 && road[2][33].ghost == 1){
+                move_player(1,2,IA);
+                road[IA->posx][IA->posy]=*IA; 
+            }
+            else /*if((road[IA->posx-1][(IA->posy)-(scan_height)].ghost == 1 && road[IA->posx-1][(IA->posy)-(scan_height+1)].ghost == 1))*/{
+                move_player(IA->posx,IA->posx-1,IA);
+                road[IA->posx][IA->posy]=*IA;      
+            }
+
+        }
+        else if(IA->posx==2){
+            move_player(IA->posx,IA->posx-1,IA);
+            road[IA->posx][IA->posy]=*IA;
+        }
     }
-    /*if(road[IA->posx][(IA->posy)-(scan_height+1)].ghost != ghost.ghost) {
-        if(IA->posx==1){
-            IA->posx=(IA->posx)+1;
-            //move_player((IA->posx)-1,IA->posx,IA);
-        }
-        if(IA->posx==2){
-            if(road[(IA->posx)+1][(IA->posy)-(scan_height+1)].ghost == ghost.ghost){
-                IA->posx=(IA->posx)+1;
-                //move_player((IA->posx)-1,IA->posx,IA);
-            }
-            else if(road[(IA->posx)-1][(IA->posy)-(scan_height+1)].ghost == ghost.ghost){
-                IA->posx=(IA->posx)-1;
-                //move_player((IA->posx)+1,IA->posx,IA);
-            }
-
-        }
-        if(IA->posx==3){
-            IA->posx=(IA->posx)-1;
-            //move_player((IA->posx)+1,IA->posx,IA);
-
-
-
-        }
-    }*/
+    if(road[IA->posx][IA->posy-scan_height].vitesse <= 50){
+        IA->vitesse=150;
+    }
+    
 
 }

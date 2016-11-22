@@ -62,8 +62,8 @@ vehicule generGhost(){
     v.type = choixType();
     v.couleur = choixCouleur();
     v.custom = choixCustom(v.type ,v.couleur);
-    v.etat = -1;
-    v.vitesse = -1;
+    v.etat = 0;
+    v.vitesse = 0;
     v.ghost = 1;
     return v;
 }
