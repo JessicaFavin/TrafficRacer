@@ -320,7 +320,7 @@ int launch_menu() {
 		if(choice != 0)	/* User did a choice come out of the infinite loop */
 			break;
 	}
-    mvprintw(23, 0, "You chose choice %d with choice string %s\n", choice, choices[choice - 1]);
+    //mvprintw(23, 0, "You chose choice %d with choice string %s\n", choice, choices[choice - 1]);
 	clrtoeol();
 	refresh();
 	endwin();

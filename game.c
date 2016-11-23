@@ -42,18 +42,34 @@ char key_pressed() {
 
 
 vehicule** alloc_road(int nb_c, int nb_l){
-    vehicule** road = (vehicule**)malloc((nb_c)*sizeof(vehicule*));
+    vehicule** road = (vehicule**)malloc((nb_l)*sizeof(vehicule*));
     int i,j;
     vehicule ghost = generGhost();
-    for(i=0; i<nb_l; i++){
+    for(i=0; i<=nb_l; i++){
         road[i] = (vehicule*)malloc(nb_l*sizeof(vehicule));
     }
-    for(i=0;i<nb_c;i++){
-        for(j=0;j<nb_l;j++){
+    for(j=0;j<=nb_c;j++){
+        for(i=0;i<=nb_l;i++){
             road[i][j]=ghost;
         }
     }
     return road;
+}
+
+void free_road(vehicule ** road, int nb_c, int nb_l){
+    int  i, j;
+    printf("begin free road\n");
+
+    for(i=0; i<=nb_l; i++){
+        printf("free line %d\n", i);
+        free(road[i]);
+        road[i] = NULL;
+    }
+
+    printf("free all the road\n");
+    free(road);
+    road = NULL;
+    printf("end free.\n");
 }
 
 int more_cars( vehicule* carList, int nb_cars, vehicule ** road){
@@ -108,19 +124,20 @@ int player_actions(char c, vehicule * player){
         }
     }
     if(c=='k'){
-        //launch(klaxon);
+        playSound(klaxon);
     }
     return b;
 }
 
 
-void player_mode(int best){
+int player_mode(int best){
     srand(time(NULL));
     vehicule** road = alloc_road(NB_VOIE_DEFAULT, HAUTEUR_ROUTE);
     vehicule* carList = malloc(NB_MAX_CAR*sizeof(vehicule));
     int nb_cars = 0, score=0, size_score = 1;
     vehicule player = generPlayer();
     road[player.posx][player.posy] = player;
+    player.custom="\e[31m🚘  \e[39m";
     print_road(best);
     move_player(player.posx, &player);
     int b = 1;
@@ -142,9 +159,12 @@ void player_mode(int best){
             clean_cursor();
         }
     }
+    //free_road(road, NB_VOIE_DEFAULT, HAUTEUR_ROUTE);
+    free(carList);
+    return score;
 }
 
-void IA_mode(int best){
+int IA_mode(int best){
 
     //printf("This mode is not implemented yet.\nCome back later. Bye!\n");
     //printf("best score for IA: %d\n",best);
@@ -159,7 +179,7 @@ void IA_mode(int best){
     IA.posy = HAUTEUR_ROUTE;
     IA.type = 'v';
     IA.couleur = BLUE;
-    IA.custom = choixCustom('v', RED);
+    IA.custom="\e[31m🚘  \e[39m";
     IA.vitesse = 150;
     IA.ghost=12;
     road[IA.posx][IA.posy] = IA;
@@ -222,7 +242,7 @@ void IA_mode(int best){
     unsigned int lastTime = 0, currentTime;
     while(b){
         char c = key_pressed();
-        if(c=='z'){
+        if(c=='l'){
             b = 0;
         }
         if(c=='v'){
@@ -243,4 +263,5 @@ void IA_mode(int best){
             clean_cursor();
         }
     }
+    return score;
 }

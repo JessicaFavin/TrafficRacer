@@ -21,5 +21,4 @@ void removeCar(vehicule * carList, int nbCars){
             carList[i]=carList[i+decale];
         }
     }
-
 }

@@ -7,9 +7,10 @@
 #include "list_car.h"
 #include "display.h"
 
-void player_mode(int best);
-void IA_mode(int best);
+int player_mode(int best);
+int IA_mode(int best);
 char key_pressed();
 vehicule** alloc_road(int nb_l, int nb_c);
+void free_road(vehicule ** road, int nb_c, int nb_l);
 
 #endif
