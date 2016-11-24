@@ -4,6 +4,9 @@
 const int HAUTEUR_ROUTE;
 const int NB_VOIE_DEFAULT;
 const int NB_MAX_CAR;
+const int LARGEUR_ROUTE;
+const int TAB_SIZE;
+
 
 
 int get_size_int(int entier);
