@@ -64,13 +64,14 @@ vehicule generPlayer(){
     player.couleur = RED;
     player.custom = choixCustom('v', RED);
     player.vitesse = 100;
+    player.ghost = 12;
     return player;
 }
 
 vehicule generGhost(){
     vehicule v;
-    v.posy = -1;
-    v.posx = -1;
+    v.posy = 0;
+    v.posx = 0;
     v.type = choixType();
     v.couleur = choixCouleur();
     v.custom = choixCustom(v.type ,v.couleur);

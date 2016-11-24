@@ -1,7 +1,7 @@
 #ifndef SOUND
 #define SOUND
 
-void playSound(char * name);
-void killSound(char * name);
+void playSound(const char * name);
+void killSound(const char * name);
 
 #endif
