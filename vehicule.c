@@ -36,6 +36,15 @@ char * choixCustom(char type, char * couleur){
     return res;
 }
 
+char * crashCustom(){
+    char * res = malloc(100*sizeof(char));
+    char * crash = "💥  ";
+    strcat(res, RED);
+    strcat(res, crash);
+    strcat(res, DEFAULT);
+    return res;
+}
+
 int choixVitesse(){
     //retourne une vitesse comprise entre 50 et 120 km/h
     int vitesse = ((rand()%8)+5)*10;

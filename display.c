@@ -179,21 +179,16 @@ void move_player(int new_pos, vehicule * player){
 }
 
 int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule ** road){
-    int i=0;
+    int i,j;
     int car_removed = 0;
     vehicule * ghost =  malloc(sizeof(vehicule));
     *ghost = generGhost();
     for (i=0;i<nbCars;i++){
     	vehicule * v = &carList[i];
 
-        if((v->posy)>0 && (v->posy)<HAUTEUR_ROUTE){                 //Le vehicule ralentis si il se retrouve derrière un autre véhicule
-            if(road[v->posy+1][v->posx].ghost != ghost->ghost && v->posy != player->posy-1){
-                v->vitesse = road[v->posy+1][v->posx].vitesse;
-
-            }else if(road[v->posy-1][v->posx].ghost != ghost->ghost && v->posy != player->posy-1){
-                v->vitesse = road[v->posy-1][v->posx].vitesse;
-            }
-        } 
+        /*for(j=0;j<nbCars;j++){
+            if(v->posy+1 == carList[j].posy || v->posy-1 == carList[j].posy){v->vitesse = carList[j].vitesse;}
+        }*/
 
 
 

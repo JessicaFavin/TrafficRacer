@@ -104,7 +104,12 @@ int collision(int nbCars, vehicule* carList, vehicule * player){
         if(carList[i].posx == player->posx && carList[i].posy == player->posy){
 
             playSound(crash);
-            printf("\033[%d;%dH\e[100m%s \e[49m",player->posx,((player->posx*LARGEUR_ROUTE)+TAB_SIZE),"💥");
+            //printf("\033[%d;%dH\e[100m%s \e[49m",new_pos,((v->posx*LARGEUR_ROUTE)+TAB_SIZE),v->custom);// ATTENTION!!!! AJUSTER LES POSITION!
+            printf("\033[%d;%dH\e[100m\e[31m 💥         \e[39m\e[49m",player->posy,((player->posx*LARGEUR_ROUTE)+TAB_SIZE));
+            player->custom = crashCustom();
+            draw_car(player);
+            sleep(3);
+
             return 0;
         }
     }
@@ -158,6 +163,7 @@ int player_mode(int best){
     move_player(player.posx, &player);
     int b = 1;
     int a=0;
+    int c = 1;
     unsigned int lastTime = 0, currentTime;
     while(b){
         char c = key_pressed();
@@ -173,8 +179,8 @@ int player_mode(int best){
             size_score = get_size_int(score);
             update_panel(&player, score, size_score, best);
             lastTime = currentTime;
-            clean_cursor();
             b=collision(nb_cars,carList,&player);
+            clean_cursor();
         }
     }
     //free_road(road, NB_VOIE_DEFAULT, HAUTEUR_ROUTE);
