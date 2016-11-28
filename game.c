@@ -58,21 +58,15 @@ vehicule **alloc_road(int nb_c, int nb_l){
     return road;
 }
 
-void free_road(vehicule ** road, int nb_c, int nb_l){
+/*void free_road(vehicule ** road, int nb_c, int nb_l){
     int  i;
-    printf("begin free road\n");
 
     for(i=0; i<=nb_l; i++){
-        printf("free line %d\n", i);
-        free(road[i]);
-        road[i] = NULL;
+            free(*(road+i));
+        
     }
-
-    printf("free all the road\n");
     free(road);
-    road = NULL;
-    printf("end free.\n");
-}
+}*/
 
 int more_cars( vehicule* carList, int nb_cars, vehicule ** road){
     int random = (rand()%(NB_VOIE_DEFAULT-1)), car_added = 0, i;
@@ -100,15 +94,11 @@ int scoring(int car_passed, int vitesse){
 
 int collision(int nbCars, vehicule* carList, vehicule * player){
     int i;
-    int collision_detected;
     for(i=0;i<nbCars;i++){
         if(carList[i].posx == player->posx && carList[i].posy == player->posy){
 
             playSound(crash);
-            //printf("\033[%d;%dH\e[100m%s \e[49m",new_pos,((v->posx*LARGEUR_ROUTE)+TAB_SIZE),v->custom);// ATTENTION!!!! AJUSTER LES POSITION!
-            //printf("\033[%d;%dH\e[100m\e[31m 💥         \e[39m\e[49m",player->posy,((player->posx*LARGEUR_ROUTE)+TAB_SIZE));
-            carList[i].custom = crashCustom();
-            draw_car(&carList[i]);
+            printf("\033[%d;%dH\e[100m\e[31m 💥 \e[39m\e[49m",player->posy,((player->posx*LARGEUR_ROUTE)+TAB_SIZE));
 
             return 0;
         }
@@ -147,13 +137,16 @@ int player_actions(char c, vehicule * player){
     if(c=='k'){
         playSound(klaxon);
     }
+    if(c == 'm'){
+        playSound(cow);
+    }
     return b;
 }
 
 
 int player_mode(int best){
     srand(time(NULL));
-    vehicule** road = alloc_road(4, 36);
+    vehicule** road = alloc_road(NB_VOIE_DEFAULT+1,HAUTEUR_ROUTE+1);
     int diff = 3;
     NB_MAX_CAR = difficulty (diff);
     vehicule* carList = malloc(NB_MAX_CAR*sizeof(vehicule));
@@ -164,8 +157,6 @@ int player_mode(int best){
     print_road(best);
     move_player(player.posx, &player);
     int b = 1;
-    int a = 0;
-    int c = 1;
     unsigned int lastTime = 0, currentTime;
     while(b){
         char c = key_pressed();
@@ -186,15 +177,12 @@ int player_mode(int best){
             if (c==0){sleep(3);b=0;}
         }
     }
-    //free_road(road, NB_VOIE_DEFAULT, HAUTEUR_ROUTE);
     free(carList);
     return score;
 }
 
 int IA_mode(int best){
 
-    //printf("This mode is not implemented yet.\nCome back later. Bye!\n");
-    //printf("best score for IA: %d\n",best);
     srand(time(NULL));
     vehicule** road = alloc_road(NB_VOIE_DEFAULT+1, HAUTEUR_ROUTE+1);
     NB_MAX_CAR = 50;
@@ -213,7 +201,6 @@ int IA_mode(int best){
     road[IA.posx][IA.posy] = IA;
     print_road(best);
     move_player(IA.posx, &IA);
-    //int pos_IA = NB_VOIE_DEFAULT/2;
     int b = 1;
     unsigned int lastTime = 0, currentTime;
     while(b){
@@ -226,7 +213,7 @@ int IA_mode(int best){
         }
         clean_cursor();
         currentTime = SDL_GetTicks();
-        if (currentTime > lastTime + 100) {
+        if (currentTime > lastTime + 10) {
             int car_removed = move_cars(carList, nb_cars, &IA, road);
             int car_added = more_cars(carList, nb_cars, road);
             score += scoring(car_removed, IA.vitesse);
@@ -237,11 +224,7 @@ int IA_mode(int best){
             lastTime = currentTime;
             move_IA(&IA,road);
             update_vitesse(&IA);
-            clean_cursor();
-            int i;
-            /*for(i=29;i<36;i++){
-            printf(" 0:   %d 1:    %d 2:   %d 3:    %d\n",road[i][0].ghost,road[i][1].ghost,road[i][2].ghost,road[i][3].ghost);
-            } */          
+            clean_cursor();    
         }
     }
     return score;
