@@ -3,7 +3,6 @@
 
 const int HAUTEUR_ROUTE;
 const int NB_VOIE_DEFAULT;
-const int NB_MAX_CAR;
 const int LARGEUR_ROUTE;
 const int TAB_SIZE;
 
@@ -23,4 +22,5 @@ void clean_cursor();
 void reposition_cursor();
 void move_IA(vehicule * IA, vehicule *** road_pointer);
 int launch_menu();
+int difficulty(int difficulty);
 #endif

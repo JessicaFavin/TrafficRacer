@@ -19,6 +19,7 @@ const char * decompte="./Sound/decompte.mp3";
 const char * gameOver=" ";
 const int VIT_MAX_PLAYER = 150;
 const int VIT_MIN_PLAYER = 50;
+int NB_MAX_CAR;
 
 char key_pressed() {
     struct termios oldterm, newterm;
@@ -105,10 +106,9 @@ int collision(int nbCars, vehicule* carList, vehicule * player){
 
             playSound(crash);
             //printf("\033[%d;%dH\e[100m%s \e[49m",new_pos,((v->posx*LARGEUR_ROUTE)+TAB_SIZE),v->custom);// ATTENTION!!!! AJUSTER LES POSITION!
-            printf("\033[%d;%dH\e[100m\e[31m 💥         \e[39m\e[49m",player->posy,((player->posx*LARGEUR_ROUTE)+TAB_SIZE));
-            player->custom = crashCustom();
-            draw_car(player);
-            sleep(3);
+            //printf("\033[%d;%dH\e[100m\e[31m 💥         \e[39m\e[49m",player->posy,((player->posx*LARGEUR_ROUTE)+TAB_SIZE));
+            carList[i].custom = crashCustom();
+            draw_car(&carList[i]);
 
             return 0;
         }
@@ -154,6 +154,8 @@ int player_actions(char c, vehicule * player){
 int player_mode(int best){
     srand(time(NULL));
     vehicule** road = alloc_road(4, 36);
+    int diff = 3;
+    NB_MAX_CAR = difficulty (diff);
     vehicule* carList = malloc(NB_MAX_CAR*sizeof(vehicule));
     int nb_cars = 0, score=0, size_score = 1;
     vehicule player = generPlayer();
@@ -162,7 +164,7 @@ int player_mode(int best){
     print_road(best);
     move_player(player.posx, &player);
     int b = 1;
-    int a=0;
+    int a = 0;
     int c = 1;
     unsigned int lastTime = 0, currentTime;
     while(b){
@@ -173,14 +175,15 @@ int player_mode(int best){
         if (currentTime > lastTime + 200) {
             int car_removed = move_cars(carList, nb_cars, &player, road);
             int car_added = more_cars(carList, nb_cars, road);
+            c=collision(nb_cars,carList,&player);
             nb_cars += car_added;
             score += scoring(car_removed, player.vitesse);
             nb_cars -= car_removed;
             size_score = get_size_int(score);
             update_panel(&player, score, size_score, best);
             lastTime = currentTime;
-            b=collision(nb_cars,carList,&player);
             clean_cursor();
+            if (c==0){sleep(3);b=0;}
         }
     }
     //free_road(road, NB_VOIE_DEFAULT, HAUTEUR_ROUTE);
@@ -194,6 +197,7 @@ int IA_mode(int best){
     //printf("best score for IA: %d\n",best);
     srand(time(NULL));
     vehicule** road = alloc_road(NB_VOIE_DEFAULT+1, HAUTEUR_ROUTE+1);
+    NB_MAX_CAR = 50;
     vehicule* carList = malloc(NB_MAX_CAR*sizeof(vehicule));
     vehicule * ghost =  malloc(sizeof(vehicule));
      *ghost = generGhost();
@@ -236,10 +240,8 @@ int IA_mode(int best){
             clean_cursor();
             int i;
             /*for(i=29;i<36;i++){
-            printf(" 0:   %d 1:    %d 2:   %d 3:    %d\n",road[i][0].posy,road[i][1].posy,road[i][2].posy,road[i][3].posy);
-            }
-            printf("pos x %d vit: %d",IA.posx, road[34][2].vitesse);*/
-            
+            printf(" 0:   %d 1:    %d 2:   %d 3:    %d\n",road[i][0].ghost,road[i][1].ghost,road[i][2].ghost,road[i][3].ghost);
+            } */          
         }
     }
     return score;
