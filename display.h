@@ -23,4 +23,5 @@ void reposition_cursor();
 void move_IA(vehicule * IA, vehicule ** road);
 int launch_menu();
 int difficulty(int difficulty);
+int game_over();
 #endif

@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <math.h>
+#include <SDL2/SDL.h>
 #include "game.h"
 #include "display.h"
 
@@ -43,12 +44,12 @@ char key_pressed() {
 
 
 vehicule **alloc_road(int nb_c, int nb_l){
-    vehicule **road =malloc(nb_c*sizeof(vehicule));
+    vehicule **road =malloc(nb_l*sizeof(vehicule));
     int i,j;
     vehicule ghost = generGhost();
 
     for(i=0; i<nb_l; i++){
-        road[i] = malloc(nb_l*sizeof(vehicule));
+        road[i] = malloc(nb_c*sizeof(vehicule));
     }
     for(i=0;i<nb_l;i++){
         for(j=0;j<nb_c;j++){
@@ -58,15 +59,13 @@ vehicule **alloc_road(int nb_c, int nb_l){
     return road;
 }
 
-/*void free_road(vehicule ** road, int nb_c, int nb_l){
+void free_road(vehicule ** road, int nb_c, int nb_l){
     int  i;
-
     for(i=0; i<=nb_l; i++){
             free(*(road+i));
-        
     }
     free(road);
-}*/
+}
 
 int more_cars( vehicule* carList, int nb_cars, vehicule ** road){
     int random = (rand()%(NB_VOIE_DEFAULT-1)), car_added = 0, i;
@@ -98,7 +97,7 @@ int collision(int nbCars, vehicule* carList, vehicule * player){
         if(carList[i].posx == player->posx && carList[i].posy == player->posy){
 
             playSound(crash);
-            printf("\033[%d;%dH\e[100m\e[31m 💥 \e[39m\e[49m",player->posy,((player->posx*LARGEUR_ROUTE)+TAB_SIZE));
+            printf("\033[%d;%dH\e[100m\e[31m💥 \e[39m\e[49m",player->posy,((player->posx*LARGEUR_ROUTE)+TAB_SIZE));
 
             return 0;
         }
@@ -146,7 +145,7 @@ int player_actions(char c, vehicule * player){
 
 int player_mode(int best){
     srand(time(NULL));
-    vehicule** road = alloc_road(NB_VOIE_DEFAULT+1,HAUTEUR_ROUTE+1);
+    vehicule** road = alloc_road(NB_VOIE_DEFAULT,HAUTEUR_ROUTE+1);
     int diff = 3;
     NB_MAX_CAR = difficulty (diff);
     vehicule* carList = malloc(NB_MAX_CAR*sizeof(vehicule));
@@ -178,13 +177,14 @@ int player_mode(int best){
         }
     }
     free(carList);
+    free_road(road, NB_VOIE_DEFAULT,HAUTEUR_ROUTE+1);
     return score;
 }
 
 int IA_mode(int best){
 
     srand(time(NULL));
-    vehicule** road = alloc_road(NB_VOIE_DEFAULT+1, HAUTEUR_ROUTE+1);
+    vehicule** road = alloc_road(NB_VOIE_DEFAULT, HAUTEUR_ROUTE+1);
     NB_MAX_CAR = 50;
     vehicule* carList = malloc(NB_MAX_CAR*sizeof(vehicule));
     vehicule * ghost =  malloc(sizeof(vehicule));
@@ -224,7 +224,7 @@ int IA_mode(int best){
             lastTime = currentTime;
             move_IA(&IA,road);
             update_vitesse(&IA);
-            clean_cursor();    
+            clean_cursor();
         }
     }
     return score;

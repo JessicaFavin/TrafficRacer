@@ -75,6 +75,7 @@ int main(int argc, char* argv[]){
         if(choice==1){
             best = get_best_score();
             score = player_mode(best);
+            game_over();
             if(score>best){
                 save_best(score);
             }
@@ -83,6 +84,7 @@ int main(int argc, char* argv[]){
         if(choice==2){
             best = get_best_score_IA();
             score = IA_mode(best);
+            game_over();
             if(score>best){
                 save_best_IA(score);
             }

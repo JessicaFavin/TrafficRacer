@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <math.h>
 #include <ncurses.h>
 #include "vehicule.h"
@@ -185,7 +186,7 @@ void move_player(int new_pos, vehicule * player){
 }
 
 int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule ** road){
-    int i,j;
+    int i;
     int car_removed = 0;
     vehicule * ghost =  malloc(sizeof(vehicule));
     *ghost = generGhost();
@@ -202,7 +203,7 @@ int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule ** roa
             clean_car(v);
             road[(v->posy)][v->posx] = *ghost;
         }
-        
+
         /*
           compare la vitesse à celle du player
           et bouge la voiture en fonction
@@ -211,19 +212,19 @@ int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule ** roa
 
           //on "descend" la voiture
 
-            if((v->posy)>0 && (v->posy)<HAUTEUR_ROUTE){                 
+            if((v->posy)>0 && (v->posy)<HAUTEUR_ROUTE){
                 road[v->posy+1][v->posx] = *v;
             }
             v->posy=v->posy+1;
         }else if (player->vitesse < v->vitesse) {
             //on "monte" la voiture
-            if((v->posy)>0 && (v->posy)<HAUTEUR_ROUTE){                
+            if((v->posy)>0 && (v->posy)<HAUTEUR_ROUTE){
             road[v->posy-1][v->posx] = *v;
             }
-        v->posy=v->posy-1;    
-        }else{
+        v->posy=v->posy-1;
+	}/*else{
             road[v->posy][v->posx] = *v;
-        }
+        }*/
         if((v->posy)>HAUTEUR_ROUTE){
             v->etat=0;
             removeCar(carList, nbCars);
@@ -238,7 +239,7 @@ int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule ** roa
 }
 
 void move_IA(vehicule * IA, vehicule ** road){          // Mouvement de l'IA
-    
+
     int scan_height=1;
     int i;
     int cmpt_G=0,cmpt_D=0;
@@ -253,7 +254,7 @@ void move_IA(vehicule * IA, vehicule ** road){          // Mouvement de l'IA
     }
 
     if(road[IA->posy-scan_height][IA->posx].ghost == 0) {
-        
+
         if (road[IA->posy-(scan_height)][IA->posx].vitesse > 25){
             IA->vitesse=road[IA->posy-(scan_height)][IA->posx].vitesse;
         }
@@ -271,7 +272,7 @@ void move_IA(vehicule * IA, vehicule ** road){          // Mouvement de l'IA
             }
             else if(road[IA->posy-scan_height][IA->posx-1].ghost == 1){
                 move_player(IA->posx-1,IA);
-                road[IA->posy][IA->posx]=*IA; 
+                road[IA->posy][IA->posx]=*IA;
             }
 
         }
@@ -284,7 +285,7 @@ void move_IA(vehicule * IA, vehicule ** road){          // Mouvement de l'IA
                 road[IA->posy][IA->posx]=*IA;
             }else if(IA->posx == 0){
                 move_player(IA->posx+1,IA);
-                road[IA->posy][IA->posx]=*IA;                
+                road[IA->posy][IA->posx]=*IA;
             }
         }
     }
@@ -295,7 +296,7 @@ void move_IA(vehicule * IA, vehicule ** road){          // Mouvement de l'IA
 }
 
 void print_menu(WINDOW *menu_win, int highlight)
-{   
+{
 	int x, y, i;
 
 	x = 2;
@@ -365,4 +366,34 @@ int launch_menu() {
 	refresh();
 	endwin();
 	return choice;
+}
+
+int game_over_menu(){
+    initscr();
+	clear();
+	int row,col;
+    getmaxyx(stdscr,row,col);
+    //width of game = 76
+	startx = (col/3) - (WIDTH/2);
+	starty = (row/3) - (HEIGHT/2);
+	printf("\033[4;22H");
+    char str[]="    ______                           ____\n   / ____/____ _ ____ ___   ___     / __ \\ _   __ ___   _____\n  / / __ / __ `// __ `__ \\ / _ \\   / / / /| | / // _ \\ / ___/\n / /_/ // /_/ // / / / / //  __/  / /_/ / | |/ //  __// /\n \\____/ \\__,_//_/ /_/ /_/ \\___/   \\____/  |___/ \\___//_/    \n";
+    mvprintw(3,0,"%s",str);
+    refresh();
+    sleep(2);
+    endwin();
+
+    return 0;
+}
+
+int game_over(){
+	system("clear");
+	printf("\033[4;22H    ______                           ____");
+	printf("\033[5;22H   / ____/____ _ ____ ___   ___     / __ \\ _   __ ___   _____");
+	printf("\033[6;22H  / / __ / __ `// __ `__ \\ / _ \\   / / / /| | / // _ \\ / ___/");
+	printf("\033[7;22H / /_/ // /_/ // / / / / //  __/  / /_/ / | |/ //  __// /");
+	printf("\033[8;22H \\____/ \\__,_//_/ /_/ /_/ \\___/   \\____/  |___/ \\___//_/    \n");
+	sleep(3);
+	system("clear");
+	return 0;
 }
