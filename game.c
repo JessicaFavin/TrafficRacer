@@ -98,7 +98,6 @@ int collision(int nbCars, vehicule* carList, vehicule * player){
 
             playSound(crash);
             printf("\033[%d;%dH\e[100m\e[31m💥 \e[39m\e[49m",player->posy,((player->posx*LARGEUR_ROUTE)+TAB_SIZE));
-
             return 0;
         }
     }
@@ -173,7 +172,11 @@ int player_mode(int best){
             update_panel(&player, score, size_score, best);
             lastTime = currentTime;
             clean_cursor();
-            if (c==0){sleep(3);b=0;}
+            if (c==0){
+                sleep(1);
+                game_over();
+                b=0;
+            }
         }
     }
     free(carList);
@@ -213,7 +216,7 @@ int IA_mode(int best){
         }
         clean_cursor();
         currentTime = SDL_GetTicks();
-        if (currentTime > lastTime + 10) {
+        if (currentTime > lastTime + 150) {
             int car_removed = move_cars(carList, nb_cars, &IA, road);
             int car_added = more_cars(carList, nb_cars, road);
             score += scoring(car_removed, IA.vitesse);
@@ -227,5 +230,7 @@ int IA_mode(int best){
             clean_cursor();
         }
     }
+    free(carList);
+    free_road(road, NB_VOIE_DEFAULT,HAUTEUR_ROUTE+1);
     return score;
 }

@@ -295,8 +295,7 @@ void move_IA(vehicule * IA, vehicule ** road){          // Mouvement de l'IA
     draw_car(IA);
 }
 
-void print_menu(WINDOW *menu_win, int highlight)
-{
+void print_menu(WINDOW *menu_win, int highlight){
 	int x, y, i;
 
 	x = 2;
@@ -368,24 +367,6 @@ int launch_menu() {
 	return choice;
 }
 
-int game_over_menu(){
-    initscr();
-	clear();
-	int row,col;
-    getmaxyx(stdscr,row,col);
-    //width of game = 76
-	startx = (col/3) - (WIDTH/2);
-	starty = (row/3) - (HEIGHT/2);
-	printf("\033[4;22H");
-    char str[]="    ______                           ____\n   / ____/____ _ ____ ___   ___     / __ \\ _   __ ___   _____\n  / / __ / __ `// __ `__ \\ / _ \\   / / / /| | / // _ \\ / ___/\n / /_/ // /_/ // / / / / //  __/  / /_/ / | |/ //  __// /\n \\____/ \\__,_//_/ /_/ /_/ \\___/   \\____/  |___/ \\___//_/    \n";
-    mvprintw(3,0,"%s",str);
-    refresh();
-    sleep(2);
-    endwin();
-
-    return 0;
-}
-
 int game_over(){
 	system("clear");
 	printf("\033[4;22H    ______                           ____");
@@ -393,7 +374,83 @@ int game_over(){
 	printf("\033[6;22H  / / __ / __ `// __ `__ \\ / _ \\   / / / /| | / // _ \\ / ___/");
 	printf("\033[7;22H / /_/ // /_/ // / / / / //  __/  / /_/ / | |/ //  __// /");
 	printf("\033[8;22H \\____/ \\__,_//_/ /_/ /_/ \\___/   \\____/  |___/ \\___//_/    \n");
-	sleep(3);
+	sleep(1);
 	system("clear");
 	return 0;
+}
+
+void decompte_display(){
+	system("clear");
+	printf("\033[4;43H  333333333333333   ");
+	printf("\033[5;43H 3:::::::::::::::33 ");
+	printf("\033[6;43H 3::::::33333::::::3");
+	printf("\033[7;43H 3333333     3:::::3");
+	printf("\033[8;43H             3:::::3");
+	printf("\033[9;43H             3:::::3");
+	printf("\033[10;43H    33333333:::::3 ");
+	printf("\033[11;43H    3:::::::::::3  ");
+	printf("\033[12;43H    33333333:::::3 ");
+	printf("\033[13;43H             3:::::3");
+	printf("\033[14;43H             3:::::3");
+	printf("\033[15;43H             3:::::3");
+	printf("\033[16;43H 3333333     3:::::3");
+	printf("\033[17;43H 3::::::33333::::::3");
+	printf("\033[18;43H 3:::::::::::::::33 ");
+	printf("\033[19;43H  333333333333333   \n");
+	sleep(1);
+	system("clear");
+	printf("\033[4;43H  222222222222222    ");
+	printf("\033[5;43H 2:::::::::::::::22  ");
+	printf("\033[6;43H 2::::::222222:::::2 ");
+	printf("\033[7;43H 2222222     2:::::2 ");
+	printf("\033[8;43H            2:::::2  ");
+	printf("\033[9;43H            2:::::2  ");
+	printf("\033[10;43H         2222::::2  ");
+	printf("\033[11;43H    22222::::::22   ");
+	printf("\033[12;43H  22::::::::222     ");
+	printf("\033[13;43H 2:::::22222        ");
+	printf("\033[14;43H2:::::2             ");
+	printf("\033[15;43H2:::::2             ");
+	printf("\033[16;43H2:::::2       222222");
+	printf("\033[17;43H2::::::2222222:::::2");
+	printf("\033[18;43H2::::::::::::::::::2");
+	printf("\033[19;43H22222222222222222222\n");
+	sleep(1);
+	system("clear");
+	printf("\033[4;43H  1111111   ");
+	printf("\033[5;43H 1::::::1   ");
+	printf("\033[6;43H1:::::::1   ");
+	printf("\033[7;43H111:::::1   ");
+	printf("\033[8;43H   1::::1   ");
+	printf("\033[9;43H   1::::1   ");
+	printf("\033[10;43H   1::::1   ");
+	printf("\033[11;43H   1::::l   ");
+	printf("\033[12;43H   1::::l   ");
+	printf("\033[13;43H   1::::l   ");
+	printf("\033[14;43H   1::::l   ");
+	printf("\033[15;43H   1::::l   ");
+	printf("\033[16;43H111::::::111");
+	printf("\033[17;43H1::::::::::1");
+	printf("\033[18;43H1::::::::::1");
+	printf("\033[19;43H111111111111\n");
+	sleep(1);
+	system("clear");
+	printf("\033[4;22H         GGGGGGGGGGGGG     OOOOOOOOO      !!! ");
+	printf("\033[5;22H      GGG::::::::::::G   OO:::::::::OO   !!:!!");
+	printf("\033[6;22H    GG:::::::::::::::G OO:::::::::::::OO !:::!");
+	printf("\033[7;22H   G:::::GGGGGGGG::::GO:::::::OOO:::::::O!:::!");
+	printf("\033[8;22H  G:::::G       GGGGGGO::::::O   O::::::O!:::!");
+	printf("\033[9;22H G:::::G              O:::::O     O:::::O!:::!");
+	printf("\033[10;22H G:::::G              O:::::O     O:::::O!:::!");
+	printf("\033[11;22H G:::::G    GGGGGGGGGGO:::::O     O:::::O!:::!");
+	printf("\033[12;22H G:::::G    G::::::::GO:::::O     O:::::O!:::!");
+	printf("\033[13;22H G:::::G    GGGGG::::GO:::::O     O:::::O!:::!");
+	printf("\033[14;22H G:::::G        G::::GO:::::O     O:::::O!!:!!");
+	printf("\033[15;22H  G:::::G       G::::GO::::::O   O::::::O !!! ");
+	printf("\033[16;22H   G:::::GGGGGGGG::::GO:::::::OOO:::::::O     ");
+	printf("\033[17;22H    GG:::::::::::::::G OO:::::::::::::OO  !!! ");
+	printf("\033[18;22H      GGG::::::GGG:::G   OO:::::::::OO   !!:!!");
+	printf("\033[19;22H         GGGGGG   GGGG     OOOOOOOOO      !!! \n");
+	sleep(1);
+	system("clear");
 }

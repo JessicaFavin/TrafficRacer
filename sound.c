@@ -8,7 +8,7 @@
 
 void playSound(const char * name ){ // Lance le son en paramétre
 	char * res= malloc(100*sizeof(char));
-	char * play= "play -q ";
+	char * play= "play -q -v 0.99 ";
 	char * esperluette=" &";
 
 	strcat(res,play);
