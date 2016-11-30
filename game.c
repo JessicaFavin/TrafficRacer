@@ -117,27 +117,28 @@ int radio(int radiofrq){
 		killSound(sound4);
 		playSound(sound1);
 		radiofrq++;
-		return radiofrq;
+
 
 	}else if(radiofrq == 1){
 		killSound(sound1);
 		playSound(sound2);
 		radiofrq++;
-		return radiofrq;
+
 
 	}else if(radiofrq == 2){
 		killSound(sound2);
 		playSound(sound3);
 		radiofrq++;
-		return radiofrq;
+
 
 
 	}else if(radiofrq == 3){
 		killSound(sound3);
 		playSound(sound4);
 		radiofrq =0;
-		return radiofrq;
+
 	}
+	return radiofrq;
 }
 
 void killRadio(int radiofrq){
@@ -181,6 +182,24 @@ int player_actions(char c, vehicule * player){
             player->vitesse -=10;
             update_vitesse(player);
         }
+    }
+    if(c=='k'){
+        playSound(klaxon);
+    }
+    if(c == 'm'){
+        playSound(cow);
+    }
+    if(c == 'r'){
+    	radiofrq = radio(radiofrq);
+    }
+    return b;
+}
+
+int IA_actions(char c){
+    int b = 1;
+    if(c=='l'){
+        b = 0;
+        killRadio(radiofrq);
     }
     if(c=='k'){
         playSound(klaxon);
@@ -267,12 +286,7 @@ int IA_mode(int best){
     unsigned int lastTime = 0, currentTime;
     while(b){
         char c = key_pressed();
-        if(c=='l'){
-            b = 0;
-        }
-        if(c=='v'){
-            update_vitesse(&IA);
-        }
+        b = IA_actions(c);
         clean_cursor();
         currentTime = SDL_GetTicks();
         if (currentTime > lastTime + 150) {
