@@ -426,7 +426,7 @@ vehicule ghost = generGhost();
     	           road[IA->posy][IA->posx]=*IA;
             }
         }
-    }    
+    }
     if(road[IA->posy-(scan_height)][IA->posx].vitesse != IA->vitesse && nb_tour%5 == 0 ){
     	   IA->vitesse=150;
     }
@@ -440,7 +440,7 @@ vehicule ghost = generGhost();
     }
     draw_car(IA);
 
-    
+
 }
 
 void print_menu(WINDOW *menu_win, int highlight){
@@ -552,7 +552,7 @@ int launch_difficulty_menu() {
 
 	menu_win = newwin(HEIGHT, WIDTH, starty, startx);
 	keypad(menu_win, TRUE);
-	mvprintw(3,0,"Choisissez la difficulté : ");
+	mvprintw(3,0,"                     ______              ____ ____ _          ____                          \n                    /_  __/_____ ____ _ / __// __/(_)_____   / __ \\ ____ _ _____ ___   _____\n                     / /  / ___// __ `// /_ / /_ / // ___/  / /_/ // __ `// ___// _ \\ / ___/\n                    / /  / /   / /_/ // __// __// // /__   / _, _// /_/ // /__ /  __// /    \n                   /_/  /_/    \\__,_//_/  /_/  /_/ \\___/  /_/ |_| \\__,_/ \\___/ \\___//_/     \n              Utilisez les fleches Haut et Bas pour selectionner.Appuyer Entree pour selectionner. \n\n                                     Choisissez la difficulté : ");
 	refresh();
 	print_menu_difficulty(menu_win, highlight);
 	while(1)

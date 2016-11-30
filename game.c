@@ -87,10 +87,15 @@ int more_cars( vehicule* carList, int nb_cars, vehicule ** road){
             //doit vérifier que la case de la voiture est bien libre
             //sinon soit en génère une autre tant que sa case n'est pas libre
             //soit change le posx pour une case libre
-            addCar(&v, carList, nb_cars);
-            car_added += 1;
-            draw_car(&v);
-            road[v.posy][v.posx] = v;
+            //if(road[v.posy][0].ghost || road[v.posy][1].ghost || road[v.posy][2].ghost){
+               //while(!road[v.posy][v.posx].ghost){
+                  v = generVehicule(NB_VOIE_DEFAULT);
+               //}
+               addCar(&v, carList, nb_cars);
+               car_added += 1;
+               draw_car(&v);
+               road[v.posy][v.posx] = v;
+            //}
         }
     }
     return car_added;
@@ -272,7 +277,7 @@ int player_mode(int best, int diff){
         currentTime = SDL_GetTicks();
         if (currentTime > lastTime+ (10000/player.vitesse)) {
            	nb_tour++;
-            if(nb_tour%500 == 0){playSound(ambulance);}           	
+            if(nb_tour%500 == 0){playSound(ambulance);}
             move_road();
             int car_removed = move_cars(carList, nb_cars, &player, road);
             int car_added = more_cars(carList, nb_cars, road);
@@ -284,15 +289,14 @@ int player_mode(int best, int diff){
             update_panel(&player, score, size_score, best);
             lastTime = currentTime;
             clean_cursor();
-            printf("%d",radiofrq );
             if (c==0){
             	unsigned int beginTime2= SDL_GetTicks();
             	unsigned int currentTime2= beginTime2;
             	while(currentTime2 < beginTime2 + 2500){ currentTime2 = SDL_GetTicks();}
+               killRadio(radiofrq);
             	system("play -q -v 0.99 ./Sound/GameOver.mp3 &");
                 game_over();
                 b=0;
-                killRadio(radiofrq);
             }
         }
     }
@@ -351,10 +355,10 @@ int IA_mode(int best){
             	unsigned int beginTime2= SDL_GetTicks();
             	unsigned int currentTime2= beginTime2;
             	while(currentTime2 < beginTime2 + 2500){ currentTime2 = SDL_GetTicks();}
+               killRadio(radiofrq);
             	system("play -q -v 0.99 ./Sound/GameOver.mp3 &");
                 game_over();
                 b=0;
-                killRadio(radiofrq);
             }
         }
     }

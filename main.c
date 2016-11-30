@@ -42,7 +42,6 @@ void save_best(int best){
         fputs(best_IA_c, fichier);
         fclose(fichier);
     }
-    printf("Score saved!");
 }
 
 void save_best_IA(int best_IA){
@@ -59,7 +58,6 @@ void save_best_IA(int best_IA){
         fputs(best_IA_c, fichier);
         fclose(fichier);
     }
-    printf("Score IA saved!");
 }
 
 int main(int argc, char* argv[]){
