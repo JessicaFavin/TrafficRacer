@@ -399,7 +399,7 @@ int launch_menu() {
 
 	menu_win = newwin(HEIGHT, WIDTH, starty, startx);
 	keypad(menu_win, TRUE);
-    mvprintw(3,0,"                     ______              ____ ____ _          ____                          \n                    /_  __/_____ ____ _ / __// __/(_)_____   / __ \\ ____ _ _____ ___   _____\n                     / /  / ___// __ `// /_ / /_ / // ___/  / /_/ // __ `// ___// _ \\ / ___/\n                    / /  / /   / /_/ // __// __// // /__   / _, _// /_/ // /__ /  __// /    \n                   /_/  /_/    \\__,_//_/  /_/  /_/ \\___/  /_/ |_| \\__,_/ \\___/ \\___//_/     \n                    Use arrow keys to go up and down, Press enter to select a choice");
+    mvprintw(3,0,"                     ______              ____ ____ _          ____                          \n                    /_  __/_____ ____ _ / __// __/(_)_____   / __ \\ ____ _ _____ ___   _____\n                     / /  / ___// __ `// /_ / /_ / // ___/  / /_/ // __ `// ___// _ \\ / ___/\n                    / /  / /   / /_/ // __// __// // /__   / _, _// /_/ // /__ /  __// /    \n                   /_/  /_/    \\__,_//_/  /_/  /_/ \\___/  /_/ |_| \\__,_/ \\___/ \\___//_/     \n\n                    Utilisez les fleches Haut et Bas pour selectionner.Appuyer Entree pour selectionner. \n\n                                        ATTENTION au volume de votre son !!!!");
 	refresh();
 	print_menu(menu_win, highlight);
 	while(1)
@@ -487,20 +487,23 @@ int launch_difficulty_menu() {
 }
 
 int game_over(){
-	system("clear");
+    system("clear");
 	printf("\033[4;22H    ______                           ____");
 	printf("\033[5;22H   / ____/____ _ ____ ___   ___     / __ \\ _   __ ___   _____");
 	printf("\033[6;22H  / / __ / __ `// __ `__ \\ / _ \\   / / / /| | / // _ \\ / ___/");
 	printf("\033[7;22H / /_/ // /_/ // / / / / //  __/  / /_/ / | |/ //  __// /");
 	printf("\033[8;22H \\____/ \\__,_//_/ /_/ /_/ \\___/   \\____/  |___/ \\___//_/    \n");
-	sleep(1);
+    unsigned int currentTime = SDL_GetTicks();
+    unsigned int beginTime = currentTime;
+    while(currentTime -beginTime < 3500){currentTime = SDL_GetTicks();}
 	system("clear");
 	return 0;
 }
 
 void decompte_display(){
-    unsigned int currentTime = 0;
-    unsigned int beginTime = 0;
+    unsigned int currentTime = SDL_GetTicks();
+    unsigned int beginTime = currentTime;
+    system("./killSound.sh ./Sound/LoadingLoop.wav repeat 9999");
     system("play -q -v 0.99 ./Sound/debutJeu.mp3 &");
     system("clear");
 	printf("\033[4;43H  333333333333333   ");
@@ -519,8 +522,7 @@ void decompte_display(){
 	printf("\033[17;43H 3::::::33333::::::3");
 	printf("\033[18;43H 3:::::::::::::::33 ");
 	printf("\033[19;43H  333333333333333   \n");
-    sleep(1);
-    while(currentTime < 12){currentTime = SDL_GetTicks();}
+    while(currentTime -beginTime < 1012){currentTime = SDL_GetTicks();}
 	system("clear");
 	printf("\033[4;43H  222222222222222    ");
 	printf("\033[5;43H 2:::::::::::::::22  ");

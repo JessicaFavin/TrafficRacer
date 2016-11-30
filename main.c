@@ -68,6 +68,7 @@ int main(int argc, char* argv[]){
     int choice = 0, best = 0, score = 0, quit = 1;
     while(quit){
         system("clear");
+        system("play -q -v 0.99 ./Sound/LoadingLoop.wav repeat 9999 &");
         printf("\033[1;1H");
         choice = launch_menu();
         //------------------------------MODE PLAYER---------------------------------
@@ -94,6 +95,7 @@ int main(int argc, char* argv[]){
 
         //------------------------------QUITTER-------------------------------------
         if(choice==3){
+            system("./killSound.sh ./Sound/LoadingLoop.wav repeat 9999");
             exit(0);
         }
     }
