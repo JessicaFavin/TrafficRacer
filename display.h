@@ -26,4 +26,6 @@ int difficulty(int difficulty);
 int game_over();
 int game_over_menu();
 void decompte_display();
+int launch_difficulty_menu();
+void move_road();
 #endif

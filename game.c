@@ -236,6 +236,7 @@ int player_mode(int best, int diff){
         clean_cursor();
         currentTime = SDL_GetTicks();
         if (currentTime > lastTime + 2000) {
+        	move_road();
             int car_removed = move_cars(carList, nb_cars, &player, road);
             int car_added = more_cars(carList, nb_cars, road);
             c=collision(nb_cars,carList,&player);

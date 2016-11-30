@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <ncurses.h>
+#include <SDL2/SDL.h>
 #include "vehicule.h"
 #include "couleur.h"
 #include "list_car.h"
@@ -15,7 +16,7 @@
 int startx = 0;
 int starty = 0;
 
-char *menu_choices[] = {
+char *choices[] = {
 			"Mode manuel",
 			"Mode automatique",
 			"Quitter"
@@ -26,6 +27,8 @@ char *difficulty_choices[] = {
 	"Normal",
 	"Difficile"
 };
+int n_choices = sizeof(choices) / sizeof(char *);
+int d_choices = sizeof(difficulty_choices) / sizeof(char *);
 char* current_song = "LoadingLoop";
 
 const int HAUTEUR_ROUTE = 35;
@@ -81,7 +84,7 @@ void print_controls(){
     printf("\033[12;80H╠══════════════════════╣\n");
     printf("\033[13;80H║Quitter      ▶ l      ║\n");
     printf("\033[14;80H╚══════════════════════╝\n");
-	 printf("\033[15;80H    Radio")
+	 printf("\033[15;80H    Radio");
 	 printf("\033[15;80HChanson en cours:%s",current_song);
 }
 
@@ -132,8 +135,9 @@ void print_road(int best){
 }
 
 void move_road(){
+    int i, j;
    for(i=0; i<HAUTEUR_ROUTE; i++){
-       printf("/e033[%d;%dH",i+1,TAB_SIZE);
+       printf("\033[%d;%dH",i+1,TAB_SIZE-5);
        if(i%3==decor){
            printf("  ");
        }
@@ -141,7 +145,7 @@ void move_road(){
        printf("%s🌵%s ", GREEN, DEFAULT);
        }
        for(j=0; j<NB_VOIE_DEFAULT; j++){
-			 printf("/e033[%d;%dH%s", i+1, 61+(j*8), BACKROAD);
+			 printf("\033[%d;%dH%s", i+1, 61+(j*8)-5, BACKROAD);
            if(!(j==NB_VOIE_DEFAULT-1) && i%2==ligne_blanches){
                printf(" ");
            }
@@ -150,7 +154,7 @@ void move_road(){
            }
        }
        printf("%s", BACKDEFAULT);
-       printf("/e033[%d;%dH",i+1,TAB_SIZE+25);
+       printf("\033[%d;%dH",i+1,TAB_SIZE+25-5);
        if(i%3==(decor+1)%3){
            printf("  ");
        }
@@ -339,9 +343,9 @@ void move_IA(vehicule * carList, int nbCars, vehicule * IA, vehicule ** road){  
     }
 }
 
-void print_menu(WINDOW *menu_win, int highlight char * choices []){
+void print_menu(WINDOW *menu_win, int highlight){
 	int x, y, i;
-	int n_choices = sizeof(choices) / sizeof(char *);
+	
 	x = 2;
 	y = 2;
 	box(menu_win, 0, 0);
@@ -356,6 +360,25 @@ void print_menu(WINDOW *menu_win, int highlight char * choices []){
 		++y;
 	}
 	wrefresh(menu_win);
+}
+
+void print_menu_difficulty(WINDOW *menu_win, int highlight){
+    int x, y, i;
+    
+    x = 2;
+    y = 2;
+    box(menu_win, 0, 0);
+    for(i = 0; i < d_choices; ++i)
+    {   if(highlight == i + 1) /* High light the present choice */
+        {   wattron(menu_win, A_REVERSE);
+            mvwprintw(menu_win, y, x, "%s", difficulty_choices[i]);
+            wattroff(menu_win, A_REVERSE);
+        }
+        else
+            mvwprintw(menu_win, y, x, "%s", difficulty_choices[i]);
+        ++y;
+    }
+    wrefresh(menu_win);
 }
 
 int launch_menu() {
@@ -378,7 +401,7 @@ int launch_menu() {
 	keypad(menu_win, TRUE);
     mvprintw(3,0,"                     ______              ____ ____ _          ____                          \n                    /_  __/_____ ____ _ / __// __/(_)_____   / __ \\ ____ _ _____ ___   _____\n                     / /  / ___// __ `// /_ / /_ / // ___/  / /_/ // __ `// ___// _ \\ / ___/\n                    / /  / /   / /_/ // __// __// // /__   / _, _// /_/ // /__ /  __// /    \n                   /_/  /_/    \\__,_//_/  /_/  /_/ \\___/  /_/ |_| \\__,_/ \\___/ \\___//_/     \n                    Use arrow keys to go up and down, Press enter to select a choice");
 	refresh();
-	print_menu(menu_win, highlight, menu_choices);
+	print_menu(menu_win, highlight);
 	while(1)
 	{	c = wgetch(menu_win);
 		switch(c)
@@ -431,7 +454,7 @@ int launch_difficulty_menu() {
 	keypad(menu_win, TRUE);
    mvprintw(3,0,"Choisissez la difficulté : ");
 	refresh();
-	print_menu(menu_win, highlight, difficulty_choices);
+	print_menu_difficulty(menu_win, highlight);
 	while(1)
 	{	c = wgetch(menu_win);
 		switch(c)
@@ -453,7 +476,7 @@ int launch_difficulty_menu() {
 			default:
 				break;
 		}
-		print_menu(menu_win, highlight);
+		print_menu_difficulty(menu_win, highlight);
 		if(choice != 0)	/* User did a choice come out of the infinite loop */
 			break;
 	}
