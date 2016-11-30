@@ -28,4 +28,5 @@ int game_over_menu();
 void decompte_display();
 int launch_difficulty_menu();
 void move_road();
+void update_radio();
 #endif

@@ -7,6 +7,12 @@
 #include "list_car.h"
 #include "display.h"
 
+const char * cow;
+const char * monkey;
+const char * goat;
+const char * eagle;
+int radiofrq;
+int nb_tour;
 int player_mode(int best, int diff);
 int IA_mode(int best);
 char key_pressed();

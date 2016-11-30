@@ -31,6 +31,7 @@ const char * sound3 ="./Sound/SongwriterBallad.wav repeat 9999";
 const char * sound4 ="./Sound/Musala.wav repeat 9999";
 int NB_MAX_CAR;
 int radiofrq = 1;
+int nb_tour = 0;
 
 char key_pressed() {
     struct termios oldterm, newterm;
@@ -190,7 +191,7 @@ int player_actions(char c, vehicule * player){
             update_vitesse(player);
             if(player->vitesse < 80){
             	playSound(deceleration);
-            }            
+            }
         }
     }
     if(c=='k'){
@@ -207,12 +208,13 @@ int player_actions(char c, vehicule * player){
     }
     if(c == 'v'){
         playSound(ambulance);
-    }    
+    }
     if(c == 'm'){
         playSound(cow);
-    }           
+    }
     if(c == 'r'){
     	radiofrq = radio(radiofrq);
+      update_radio();
     }
     return b;
 }
@@ -240,7 +242,7 @@ int IA_actions(char c){
     }
     if(c == 'v'){
         playSound(ambulance);
-    }  
+    }
     if(c == 'r'){
     	radiofrq = radio(radiofrq);
     }
@@ -268,8 +270,9 @@ int player_mode(int best, int diff){
         b = player_actions(c, &player);
         clean_cursor();
         currentTime = SDL_GetTicks();
-        if (currentTime > lastTime + 150) {
-        	move_road();
+        if (currentTime > lastTime+ (10000/player.vitesse)) {
+           nb_tour++;
+            move_road();
             int car_removed = move_cars(carList, nb_cars, &player, road);
             int car_added = more_cars(carList, nb_cars, road);
             c=collision(nb_cars,carList,&player);
@@ -284,8 +287,8 @@ int player_mode(int best, int diff){
             if (c==0){
             	unsigned int beginTime2= SDL_GetTicks();
             	unsigned int currentTime2= beginTime2;
-            	while(currentTime2 < beginTime2 + 2500){ currentTime2 = SDL_GetTicks();} 
-            	system("play -q -v 0.99 ./Sound/GameOver.mp3 &");        	
+            	while(currentTime2 < beginTime2 + 2500){ currentTime2 = SDL_GetTicks();}
+            	system("play -q -v 0.99 ./Sound/GameOver.mp3 &");
                 game_over();
                 b=0;
                 killRadio(radiofrq);

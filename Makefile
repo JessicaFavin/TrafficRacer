@@ -19,7 +19,7 @@ game.o: display.h vehicule.h couleur.h sound.h list_car.h
 vehicule.o: couleur.h display.h
 couleur.o: couleur.h
 sound.o: sound.h
-display.o: display.h vehicule.h couleur.h list_car.h
+display.o: display.h vehicule.h couleur.h list_car.h game.h
 list_car.o: list_car.h vehicule.h
 %.o: %.c
 	$(CC) -o $@ -c $< $(CFLAGS) $(SDLFLAGS)

@@ -25,23 +25,26 @@ char * choixCustom(char type, char * couleur){
     char * voiture = "🚘  ";
     char * res = malloc(100*sizeof(char));
     if(type=='c'){
-        strcat(res, couleur);
+        strcpy(res, couleur);
         strcat(res, camion);
         strcat(res, DEFAULT);
+        strcat(res, "\0");
         return res;
     }
-    strcat(res, couleur);
+    strcpy(res, couleur);
     strcat(res, voiture);
     strcat(res, DEFAULT);
+    strcat(res, "\0");
     return res;
 }
 
 char * crashCustom(){
     char * res = malloc(100*sizeof(char));
     char * crash = "💥  ";
-    strcat(res, RED);
+    strcpy(res, RED);
     strcat(res, crash);
     strcat(res, DEFAULT);
+    strcat(res, "\0");
     return res;
 }
 

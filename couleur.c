@@ -7,6 +7,7 @@ char * BLUE="\e[34m";
 char * GREEN="\e[32m";
 char * RED = "\e[31m";
 char * CYAN="\e[96m";
+char * YELLOW="\e[33m";
 char * BACKROAD="\e[100m";
 char * BACKDEFAULT="\e[49m";
 

@@ -6,6 +6,7 @@ char * BLUE;
 char * GREEN;
 char * RED;
 char * CYAN;
+char * YELLOW;
 char * BACKROAD;
 char * BACKDEFAULT;
 
