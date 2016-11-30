@@ -112,7 +112,7 @@ int collision(int nbCars, vehicule* carList, vehicule * player){
 }
 
 int radio(int radiofrq){
-	
+
 	if(radiofrq == 0){
 		killSound(sound4);
 		playSound(sound1);
@@ -148,9 +148,9 @@ void killRadio(int radiofrq){
 	}else if(radiofrq == 1){
 		killSound(sound1);
 	}else if(radiofrq == 2){
-		killSound(sound2);		
+		killSound(sound2);
 	}else if(radiofrq == 3){
-		killSound(sound3);		
+		killSound(sound3);
 	}
 
 }
@@ -214,12 +214,12 @@ int IA_actions(char c){
 }
 
 
-int player_mode(int best){
+int player_mode(int best, int diff){
     srand(time(NULL));
     system("play -q -v 0.99 ./Sound/LoadingLoop.wav repeat 9999&");
     radiofrq =1;
     vehicule** road = alloc_road(NB_VOIE_DEFAULT,HAUTEUR_ROUTE+1);
-    int diff = 3;
+    //int diff = 3;
     NB_MAX_CAR = difficulty (diff);
     vehicule* carList = malloc(NB_MAX_CAR*sizeof(vehicule));
     int nb_cars = 0, score=0, size_score = 1;

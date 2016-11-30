@@ -75,8 +75,9 @@ int main(int argc, char* argv[]){
 
         if(choice==1){
             best = get_best_score();
+            int difficulte = launch_difficulty_menu();
             decompte_display();
-            score = player_mode(best);
+            score = player_mode(best, difficulte);
             if(score>best){
                 save_best(score);
             }

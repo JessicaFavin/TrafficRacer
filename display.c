@@ -15,13 +15,18 @@
 int startx = 0;
 int starty = 0;
 
-char *choices[] = {
+char *menu_choices[] = {
 			"Mode manuel",
 			"Mode automatique",
 			"Quitter"
 		  };
-int n_choices = sizeof(choices) / sizeof(char *);
 
+char *difficulty_choices[] = {
+	"Facile",
+	"Normal",
+	"Difficile"
+};
+char* current_song = "LoadingLoop";
 
 const int HAUTEUR_ROUTE = 35;
 const int HAUTEUR_MENU = 8;
@@ -29,10 +34,13 @@ const int LARGEUR_MENU = 24;
 const int LARGEUR_ROUTE = 8;
 const int NB_VOIE_DEFAULT = 3;
 const char * TAB = "                                            ";
-//+2 for the cactuses
+//+2 for the decors
 const int TAB_SIZE = 44+5+2;
 const int VIT_MAX_IA = 150;
 const int VIT_MIN_IA = 50;
+
+int decor = 0;
+int ligne_blanches = 0;
 
 
 void clean_cursor(){
@@ -69,8 +77,12 @@ void print_controls(){
     printf("\033[9;80H╠══════════════════════╣\n");
     printf("\033[10;80H║Klaxonner    ▶ k      ║\n");
     printf("\033[11;80H╠══════════════════════╣\n");
-    printf("\033[12;80H║Quitter      ▶ l      ║\n");
-    printf("\033[13;80H╚══════════════════════╝\n");
+	 printf("\033[11;80H║Radio        ▶ r      ║\n");
+    printf("\033[12;80H╠══════════════════════╣\n");
+    printf("\033[13;80H║Quitter      ▶ l      ║\n");
+    printf("\033[14;80H╚══════════════════════╝\n");
+	 printf("\033[15;80H    Radio")
+	 printf("\033[15;80HChanson en cours:%s",current_song);
 }
 
 void print_road(int best){
@@ -78,7 +90,7 @@ void print_road(int best){
     for(i=0; i<HAUTEUR_ROUTE; i++){
         printf("%s", TAB);
         if(i%3==0){
-            printf("🌵 ");
+            printf("%s🌵%s ", GREEN, DEFAULT);
         } else {
             printf("  ");
         }
@@ -93,7 +105,7 @@ void print_road(int best){
         }
         printf("%s║", BACKDEFAULT);
         if(i%3==1){
-            printf("🌵 \n");
+            printf("%s🌵%s \n", GREEN, DEFAULT);
         } else {
             printf("  \n");
         }
@@ -117,6 +129,38 @@ void print_road(int best){
     printf("║\n");
     printf("╚══════════════════════╝\n");
     print_controls();
+}
+
+void move_road(){
+   for(i=0; i<HAUTEUR_ROUTE; i++){
+       printf("/e033[%d;%dH",i+1,TAB_SIZE);
+       if(i%3==decor){
+           printf("  ");
+       }
+       if(i%3==(decor+1)%3) {
+       printf("%s🌵%s ", GREEN, DEFAULT);
+       }
+       for(j=0; j<NB_VOIE_DEFAULT; j++){
+			 printf("/e033[%d;%dH%s", i+1, 61+(j*8), BACKROAD);
+           if(!(j==NB_VOIE_DEFAULT-1) && i%2==ligne_blanches){
+               printf(" ");
+           }
+          if(!(j==NB_VOIE_DEFAULT-1) && i%2==(ligne_blanches+1)%2){
+               printf("|");
+           }
+       }
+       printf("%s", BACKDEFAULT);
+       printf("/e033[%d;%dH",i+1,TAB_SIZE+25);
+       if(i%3==(decor+1)%3){
+           printf("  ");
+       }
+       if(i%3==(decor+2)%3) {
+       printf("%s🌵%s ", GREEN, DEFAULT);
+       }
+   }
+   clean_cursor();
+   decor = (decor+1)%3;
+   ligne_blanches = (ligne_blanches+1)%2;
 }
 
 void update_score(int score, int size_score){
@@ -295,9 +339,9 @@ void move_IA(vehicule * carList, int nbCars, vehicule * IA, vehicule ** road){  
     }
 }
 
-void print_menu(WINDOW *menu_win, int highlight){
+void print_menu(WINDOW *menu_win, int highlight char * choices []){
 	int x, y, i;
-
+	int n_choices = sizeof(choices) / sizeof(char *);
 	x = 2;
 	y = 2;
 	box(menu_win, 0, 0);
@@ -332,9 +376,9 @@ int launch_menu() {
 
 	menu_win = newwin(HEIGHT, WIDTH, starty, startx);
 	keypad(menu_win, TRUE);
-    mvprintw(3,0,"                     ______              ____ ____ _          ____                          \n                    /_  __/_____ ____ _ / __// __/(_)_____   / __ \\ ____ _ _____ ___   _____\n                     / /  / ___// __ `// /_ / /_ / // ___/  / /_/ // __ `// ___// _ \\ / ___/\n                    / /  / /   / /_/ // __// __// // /__   / _, _// /_/ // /__ /  __// /    \n                   /_/  /_/    \\__,_//_/  /_/  /_/ \\___/  /_/ |_| \\__,_/ \\___/ \\___//_/     \n                    Utilisez les fleches haut et bas pour faire un choix, appuyer entree pour confirmer. \n                                        ATTENTION au Volume !!! \n ");
+    mvprintw(3,0,"                     ______              ____ ____ _          ____                          \n                    /_  __/_____ ____ _ / __// __/(_)_____   / __ \\ ____ _ _____ ___   _____\n                     / /  / ___// __ `// /_ / /_ / // ___/  / /_/ // __ `// ___// _ \\ / ___/\n                    / /  / /   / /_/ // __// __// // /__   / _, _// /_/ // /__ /  __// /    \n                   /_/  /_/    \\__,_//_/  /_/  /_/ \\___/  /_/ |_| \\__,_/ \\___/ \\___//_/     \n                    Use arrow keys to go up and down, Press enter to select a choice");
 	refresh();
-	print_menu(menu_win, highlight);
+	print_menu(menu_win, highlight, menu_choices);
 	while(1)
 	{	c = wgetch(menu_win);
 		switch(c)
@@ -361,6 +405,58 @@ int launch_menu() {
 			break;
 	}
     //mvprintw(23, 0, "You chose choice %d with choice string %s\n", choice, choices[choice - 1]);
+	clrtoeol();
+	refresh();
+	endwin();
+	return choice;
+}
+
+int launch_difficulty_menu() {
+    WINDOW *menu_win;
+	int highlight = 1;
+	int choice = 0;
+	int c;
+
+	initscr();
+	clear();
+	noecho();
+	cbreak();	/* Line buffering disabled. pass on everything */
+    int row,col;
+    getmaxyx(stdscr,row,col);
+    //width of game = 76
+	startx = (col/3) - (WIDTH/2);
+	starty = (row/3) - (HEIGHT/2);
+
+	menu_win = newwin(HEIGHT, WIDTH, starty, startx);
+	keypad(menu_win, TRUE);
+   mvprintw(3,0,"Choisissez la difficulté : ");
+	refresh();
+	print_menu(menu_win, highlight, difficulty_choices);
+	while(1)
+	{	c = wgetch(menu_win);
+		switch(c)
+		{	case KEY_UP:
+				if(highlight == 1)
+					highlight = n_choices;
+				else
+					--highlight;
+				break;
+			case KEY_DOWN:
+				if(highlight == n_choices)
+					highlight = 1;
+				else
+					++highlight;
+				break;
+			case 10:
+				choice = highlight;
+				break;
+			default:
+				break;
+		}
+		print_menu(menu_win, highlight);
+		if(choice != 0)	/* User did a choice come out of the infinite loop */
+			break;
+	}
 	clrtoeol();
 	refresh();
 	endwin();
@@ -400,7 +496,7 @@ void decompte_display(){
 	printf("\033[17;43H 3::::::33333::::::3");
 	printf("\033[18;43H 3:::::::::::::::33 ");
 	printf("\033[19;43H  333333333333333   \n");
-    sleep(1);   
+    sleep(1);
     while(currentTime < 12){currentTime = SDL_GetTicks();}
 	system("clear");
 	printf("\033[4;43H  222222222222222    ");
