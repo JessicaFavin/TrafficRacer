@@ -4,6 +4,7 @@
 #include <math.h>
 #include "game.h"
 
+
 int get_best_score(){
     FILE *fp;
     char buff[255];

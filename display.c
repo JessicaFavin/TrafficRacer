@@ -7,6 +7,7 @@
 #include "vehicule.h"
 #include "couleur.h"
 #include "list_car.h"
+#include "sound.h"
 
 #define WIDTH 20
 #define HEIGHT 7
@@ -186,7 +187,7 @@ void move_player(int new_pos, vehicule * player){
 }
 
 int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule ** road){
-    int i;
+    int i,j;
     int car_removed = 0;
     vehicule * ghost =  malloc(sizeof(vehicule));
     *ghost = generGhost();
@@ -194,12 +195,12 @@ int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule ** roa
     	vehicule * v = &carList[i];
 
         /*for(j=0;j<nbCars;j++){
-            if(v->posy+1 == carList[j].posy || v->posy-1 == carList[j].posy){v->vitesse = carList[j].vitesse;}
+            if(v->posy+1 == carList[j].posy){v->vitesse = carList[j].vitesse;}
         }*/
 
 
 
-        if ((v->posy)>=0 && (v->posy)<=HAUTEUR_ROUTE){ // supprime la voiture que si elle est visible et la remplace par un phantom dans la matrice
+        if ((v->posy)>=0 && (v->posy)<=HAUTEUR_ROUTE && v->vitesse != player->vitesse){ // supprime la voiture que si elle est visible et la remplace par un phantom dans la matrice
             clean_car(v);
             road[(v->posy)][v->posx] = *ghost;
         }
@@ -219,12 +220,10 @@ int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule ** roa
         }else if (player->vitesse < v->vitesse) {
             //on "monte" la voiture
             if((v->posy)>0 && (v->posy)<HAUTEUR_ROUTE){
-            road[v->posy-1][v->posx] = *v;
+                road[v->posy-1][v->posx] = *v;
             }
-        v->posy=v->posy-1;
-	}/*else{
-            road[v->posy][v->posx] = *v;
-        }*/
+            v->posy=v->posy-1;
+	    }
         if((v->posy)>HAUTEUR_ROUTE){
             v->etat=0;
             removeCar(carList, nbCars);
@@ -238,11 +237,11 @@ int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule ** roa
 
 }
 
-void move_IA(vehicule * IA, vehicule ** road){          // Mouvement de l'IA
+void move_IA(vehicule * carList, int nbCars, vehicule * IA, vehicule ** road){          // Mouvement de l'IA
 
     int scan_height=1;
-    int i;
-    int cmpt_G=0,cmpt_D=0;
+    int i,j;
+    int cmpt_G=0,cmpt_D=0,cmpt=0;
 
 
     vehicule ghost = generGhost();
@@ -255,31 +254,32 @@ void move_IA(vehicule * IA, vehicule ** road){          // Mouvement de l'IA
 
     if(road[IA->posy-scan_height][IA->posx].ghost == 0) {
 
-        if (road[IA->posy-(scan_height)][IA->posx].vitesse > 25){
-            IA->vitesse=road[IA->posy-(scan_height)][IA->posx].vitesse;
-        }
 
-        if(IA->posx==0 && road[IA->posy-scan_height][IA->posx+1].ghost == 1){
+        for(j=0;j<nbCars;j++){if(carList[j].posy == IA->posy-scan_height && carList[j].posx == IA->posx){IA->vitesse = carList[j].vitesse;}}
+
+
+        if(IA->posx==0 && road[IA->posy-scan_height][IA->posx+1].ghost == 1 && road[IA->posy][IA->posx+1].ghost != 0){
             move_player(1,IA);
             road[IA->posy][IA->posx]=*IA;
         }
 
         else if(IA->posx>0 && IA->posx<NB_VOIE_DEFAULT-1){
 
-            if(road[IA->posy-scan_height][IA->posx+1].ghost == 1 && cmpt_D<cmpt_G){
+            if(road[IA->posy-scan_height][IA->posx+1].ghost == 1 && cmpt_D<cmpt_G && road[IA->posy][IA->posx+1].ghost == 1){
                 move_player(2,IA);
                 road[IA->posy][IA->posx]=*IA;
             }
-            else if(road[IA->posy-scan_height][IA->posx-1].ghost == 1){
+            else if(road[IA->posy-scan_height][IA->posx-1].ghost == 1 && road[IA->posy][IA->posx-1].ghost != 0){
                 move_player(IA->posx-1,IA);
                 road[IA->posy][IA->posx]=*IA;
             }
 
         }
-        else if(IA->posx == NB_VOIE_DEFAULT-1 && road[IA->posy-scan_height][IA->posx-1].ghost == 1){
+        else if(IA->posx == NB_VOIE_DEFAULT-1 && road[IA->posy-scan_height][IA->posx-1].ghost == 1 && road[IA->posy][IA->posx-1].ghost != 0){
             move_player(IA->posx-1,IA);
             road[IA->posy][IA->posx]=*IA;
-        }else if(road[IA->posy-(scan_height)][IA->posx+1].ghost == 0 || road[IA->posy-(scan_height)][IA->posx-1].ghost ==0){
+
+        }/*else if((road[IA->posy-(scan_height)][IA->posx+1].ghost == 0 || road[IA->posy-(scan_height)][IA->posx-1].ghost ==0) && road[IA->posy-scan_height][IA->posx].ghost == 0){
             if(IA->posx == 2){
                 move_player(IA->posx-1,IA);
                 road[IA->posy][IA->posx]=*IA;
@@ -287,12 +287,12 @@ void move_IA(vehicule * IA, vehicule ** road){          // Mouvement de l'IA
                 move_player(IA->posx+1,IA);
                 road[IA->posy][IA->posx]=*IA;
             }
-        }
+        }*/
+        cmpt++;
     }
-    if(road[IA->posy-(scan_height)][IA->posx].ghost == 1){
+    if(road[IA->posy-(scan_height)][IA->posx].vitesse != IA->vitesse && cmpt%3 == 0){
         IA->vitesse=150;
     }
-    draw_car(IA);
 }
 
 void print_menu(WINDOW *menu_win, int highlight){
@@ -380,7 +380,10 @@ int game_over(){
 }
 
 void decompte_display(){
-	system("clear");
+    unsigned int currentTime = 0;
+    unsigned int beginTime = 0;
+    system("play -q -v 0.99 ./Sound/debutJeu.mp3 &");
+    system("clear");
 	printf("\033[4;43H  333333333333333   ");
 	printf("\033[5;43H 3:::::::::::::::33 ");
 	printf("\033[6;43H 3::::::33333::::::3");
@@ -397,7 +400,8 @@ void decompte_display(){
 	printf("\033[17;43H 3::::::33333::::::3");
 	printf("\033[18;43H 3:::::::::::::::33 ");
 	printf("\033[19;43H  333333333333333   \n");
-	sleep(1);
+    sleep(1);   
+    while(currentTime < 12){currentTime = SDL_GetTicks();}
 	system("clear");
 	printf("\033[4;43H  222222222222222    ");
 	printf("\033[5;43H 2:::::::::::::::22  ");
@@ -415,7 +419,8 @@ void decompte_display(){
 	printf("\033[17;43H2::::::2222222:::::2");
 	printf("\033[18;43H2::::::::::::::::::2");
 	printf("\033[19;43H22222222222222222222\n");
-	sleep(1);
+    beginTime = currentTime;
+    while(currentTime - beginTime < 1200){currentTime = SDL_GetTicks();}
 	system("clear");
 	printf("\033[4;43H  1111111   ");
 	printf("\033[5;43H 1::::::1   ");
@@ -433,7 +438,8 @@ void decompte_display(){
 	printf("\033[17;43H1::::::::::1");
 	printf("\033[18;43H1::::::::::1");
 	printf("\033[19;43H111111111111\n");
-	sleep(1);
+    beginTime = currentTime;
+    while(currentTime - beginTime < 1200){currentTime = SDL_GetTicks();}
 	system("clear");
 	printf("\033[4;22H         GGGGGGGGGGGGG     OOOOOOOOO      !!! ");
 	printf("\033[5;22H      GGG::::::::::::G   OO:::::::::OO   !!:!!");
@@ -451,6 +457,7 @@ void decompte_display(){
 	printf("\033[17;22H    GG:::::::::::::::G OO:::::::::::::OO  !!! ");
 	printf("\033[18;22H      GGG::::::GGG:::G   OO:::::::::OO   !!:!!");
 	printf("\033[19;22H         GGGGGG   GGGG     OOOOOOOOO      !!! \n");
-	sleep(1);
+    beginTime = currentTime;
+    while(currentTime - beginTime < 500){currentTime = SDL_GetTicks();}
 	system("clear");
 }

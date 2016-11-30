@@ -9,6 +9,8 @@
 #include <SDL2/SDL.h>
 #include "game.h"
 #include "display.h"
+#include "sound.h"
+
 
 const char * crash="./Sound/crash.mp3";
 const char * klaxon="./Sound/klaxon.mp3";
@@ -16,11 +18,15 @@ const char * acceleration="./Sound/acceleration.mp3";
 const char * cow="./Sound/cow.mp3";
 const char * music=" ";
 const char * end=" ";
-const char * decompte="./Sound/decompte.mp3";
 const char * gameOver=" ";
 const int VIT_MAX_PLAYER = 150;
 const int VIT_MIN_PLAYER = 50;
+const char * sound1 ="./Sound/LoadingLoop.wav repeat 9999";
+const char * sound2 ="./Sound/Fashion.mp3 repeat 9999";
+const char * sound3 ="./Sound/DonaNobisPacem.mp3 repeat 9999";
+const char * sound4 ="./Sound/TransitionTech2.mp3 repeat 9999";
 int NB_MAX_CAR;
+int radiofrq;
 
 char key_pressed() {
     struct termios oldterm, newterm;
@@ -105,6 +111,49 @@ int collision(int nbCars, vehicule* carList, vehicule * player){
 
 }
 
+int radio(int radiofrq){
+	
+	if(radiofrq == 0){
+		killSound(sound4);
+		playSound(sound1);
+		radiofrq++;
+		return radiofrq;
+
+	}else if(radiofrq == 1){
+		killSound(sound1);
+		playSound(sound2);
+		radiofrq++;
+		return radiofrq;
+
+	}else if(radiofrq == 2){
+		killSound(sound2);
+		playSound(sound3);
+		radiofrq++;
+		return radiofrq;
+
+
+	}else if(radiofrq == 3){
+		killSound(sound3);
+		playSound(sound4);
+		radiofrq =0;
+		return radiofrq;
+	}
+}
+
+void killRadio(int radiofrq){
+
+	if(radiofrq == 0){
+		killSound(sound4);
+	}else if(radiofrq == 1){
+		killSound(sound1);
+	}else if(radiofrq == 2){
+		killSound(sound2);		
+	}else if(radiofrq == 3){
+		killSound(sound3);		
+	}
+
+}
+
 
 
 int player_actions(char c, vehicule * player){
@@ -117,6 +166,7 @@ int player_actions(char c, vehicule * player){
     }
     if(c=='l'){
         b = 0;
+        killRadio(radiofrq);
     }
     if(c=='A' || c=='z'){
         //test si vitesse inf a VIT_MAX_PLAYER
@@ -138,12 +188,17 @@ int player_actions(char c, vehicule * player){
     if(c == 'm'){
         playSound(cow);
     }
+    if(c == 'r'){
+    	radiofrq = radio(radiofrq);
+    }
     return b;
 }
 
 
 int player_mode(int best){
     srand(time(NULL));
+    system("play -q -v 0.99 ./Sound/LoadingLoop.wav repeat 9999&");
+    radiofrq =1;
     vehicule** road = alloc_road(NB_VOIE_DEFAULT,HAUTEUR_ROUTE+1);
     int diff = 3;
     NB_MAX_CAR = difficulty (diff);
@@ -161,7 +216,7 @@ int player_mode(int best){
         b = player_actions(c, &player);
         clean_cursor();
         currentTime = SDL_GetTicks();
-        if (currentTime > lastTime + 200) {
+        if (currentTime > lastTime + 2000) {
             int car_removed = move_cars(carList, nb_cars, &player, road);
             int car_added = more_cars(carList, nb_cars, road);
             c=collision(nb_cars,carList,&player);
@@ -172,10 +227,12 @@ int player_mode(int best){
             update_panel(&player, score, size_score, best);
             lastTime = currentTime;
             clean_cursor();
+            printf("%d",radiofrq );
             if (c==0){
                 sleep(1);
                 game_over();
                 b=0;
+                killRadio(radiofrq);
             }
         }
     }
@@ -187,6 +244,8 @@ int player_mode(int best){
 int IA_mode(int best){
 
     srand(time(NULL));
+    system("play -q -v 0.99 ./Sound/LoadingLoop.wav repeat 9999 &");
+    radiofrq =1;
     vehicule** road = alloc_road(NB_VOIE_DEFAULT, HAUTEUR_ROUTE+1);
     NB_MAX_CAR = 50;
     vehicule* carList = malloc(NB_MAX_CAR*sizeof(vehicule));
@@ -219,15 +278,22 @@ int IA_mode(int best){
         if (currentTime > lastTime + 150) {
             int car_removed = move_cars(carList, nb_cars, &IA, road);
             int car_added = more_cars(carList, nb_cars, road);
+            c=collision(nb_cars,carList,&IA);
             score += scoring(car_removed, IA.vitesse);
             nb_cars += car_added;
             nb_cars -= car_removed;
             size_score = get_size_int(score);
             update_panel(&IA, score, size_score, best);
             lastTime = currentTime;
-            move_IA(&IA,road);
+            move_IA(carList, nb_cars, &IA, road);
             update_vitesse(&IA);
             clean_cursor();
+            if (c==0){
+                sleep(1);
+                game_over();
+                b=0;
+                killRadio(radiofrq);
+            }
         }
     }
     free(carList);

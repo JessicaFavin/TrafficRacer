@@ -20,7 +20,7 @@ void clean_car(vehicule * v);
 int move_cars(vehicule * carList, int nbCars, vehicule * player, vehicule ** road);
 void clean_cursor();
 void reposition_cursor();
-void move_IA(vehicule * IA, vehicule ** road);
+void move_IA(vehicule * carList, int nbCars, vehicule * IA, vehicule ** road);
 int launch_menu();
 int difficulty(int difficulty);
 int game_over();
