@@ -102,10 +102,27 @@ void print_controls(){
 	printf("\033[17;80HChanson en cours: %s     ",current_song(radiofrq));
 }
 
+void print_restricted_controls(){
+	printf("\033[1;80H╔══════════════════════╗\n");
+	printf("\033[2;80H║Klaxonner    ▶ k      ║\n");
+	printf("\033[3;80H╠══════════════════════╣\n");
+	printf("\033[4;80H║Radio        ▶ r      ║\n");
+	printf("\033[5;80H╠══════════════════════╣\n");
+	printf("\033[6;80H║Quitter      ▶ l      ║\n");
+	printf("\033[7;80H╚══════════════════════╝\n");
+	printf("\033[8;80H           Radio");
+	printf("\033[9;80HChanson en cours: %s     ",current_song(radiofrq));
+}
+
 void update_radio(){
 	printf("\033[17;80HChanson en cours: %s     ",current_song(radiofrq));
 }
-void print_road(int best){
+
+void update_restricted_radio(){
+	printf("\033[9;80HChanson en cours: %s     ",current_song(radiofrq));
+}
+
+void print_road(int best, int mode){
 	int i, j;
 	for(i=0; i<HAUTEUR_ROUTE; i++){
 		printf("%s", TAB);
@@ -148,7 +165,11 @@ void print_road(int best){
 	}
 	printf("║\n");
 	printf("╚══════════════════════╝\n");
-	print_controls();
+	if(mode){
+		print_controls();
+	} else {
+		print_restricted_controls();
+	}
 }
 
 void move_road(){

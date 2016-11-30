@@ -250,6 +250,7 @@ int IA_actions(char c){
     }
     if(c == 'r'){
     	radiofrq = radio(radiofrq);
+      update_restricted_radio();
     }
     return b;
 }
@@ -266,7 +267,7 @@ int player_mode(int best, int diff){
     vehicule player = generPlayer();
     road[player.posx][player.posy] = player;
     player.custom="\e[31m🚘  \e[39m";
-    print_road(best);
+    print_road(best, 1);
     move_player(player.posx, &player);
     int b = 1;
     unsigned int lastTime = 0, currentTime;
@@ -326,7 +327,7 @@ int IA_mode(int best){
     IA.vitesse = 150;
     IA.ghost=12;
     road[IA.posx][IA.posy] = IA;
-    print_road(best);
+    print_road(best, 0);
     move_player(IA.posx, &IA);
     int b = 1;
     unsigned int lastTime = 0, currentTime;

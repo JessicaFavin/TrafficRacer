@@ -9,7 +9,7 @@ const int TAB_SIZE;
 
 
 int get_size_int(int entier);
-void print_road(int best);
+void print_road(int best, int mode);
 void update_score(int score, int size_score);
 void update_best_score(int best, int size_best);
 void update_vitesse(vehicule * player);
@@ -29,4 +29,5 @@ void decompte_display();
 int launch_difficulty_menu();
 void move_road();
 void update_radio();
+void update_restricted_radio();
 #endif
