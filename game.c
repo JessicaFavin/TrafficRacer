@@ -271,7 +271,8 @@ int player_mode(int best, int diff){
         clean_cursor();
         currentTime = SDL_GetTicks();
         if (currentTime > lastTime+ (10000/player.vitesse)) {
-           nb_tour++;
+           	nb_tour++;
+            if(nb_tour%500 == 0){playSound(ambulance);}           	
             move_road();
             int car_removed = move_cars(carList, nb_cars, &player, road);
             int car_added = more_cars(carList, nb_cars, road);
@@ -330,7 +331,11 @@ int IA_mode(int best){
         b = IA_actions(c);
         clean_cursor();
         currentTime = SDL_GetTicks();
-        if (currentTime > lastTime + 150) {
+        if (currentTime > lastTime+ (12000/IA.vitesse)) {
+            nb_tour++;
+            if(nb_tour%500 == 0){playSound(ambulance);}
+            move_road();
+            move_IA(carList, nb_cars, &IA, road);
             int car_removed = move_cars(carList, nb_cars, &IA, road);
             int car_added = more_cars(carList, nb_cars, road);
             c=collision(nb_cars,carList,&IA);
@@ -340,7 +345,6 @@ int IA_mode(int best){
             size_score = get_size_int(score);
             update_panel(&IA, score, size_score, best);
             lastTime = currentTime;
-            move_IA(carList, nb_cars, &IA, road);
             update_vitesse(&IA);
             clean_cursor();
             if (c==0){

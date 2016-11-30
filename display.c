@@ -370,58 +370,77 @@ void move_IA(vehicule * carList, int nbCars, vehicule * IA, vehicule ** road){  
 
 int scan_height=1;
 int i,j;
-int cmpt_G=0,cmpt_D=0,cmpt=0;
+int cmpt_G=0,cmpt_D=0;
 
 
 vehicule ghost = generGhost();
 
-for(i=0;i<HAUTEUR_ROUTE;i++){
-	if(road[i][IA->posx-1].ghost != ghost.ghost){cmpt_G+=1;}
+    for(i=0;i<HAUTEUR_ROUTE;i++){
+	   if(road[i][IA->posx-1].ghost != ghost.ghost){cmpt_G+=1;}
 
-	if(road[i][IA->posx+1].ghost != ghost.ghost){cmpt_D+=1;}
-}
+	   if(road[i][IA->posx+1].ghost != ghost.ghost){cmpt_D+=1;}
+    }
+    for(j=0;j<nbCars;j++){
+        if(carList[j].posy == IA->posy-scan_height && carList[j].posx == IA->posx){
+                IA->vitesse = carList[j].vitesse;
+        }
+        if(carList[j].posy == IA->posy && road[carList[j].posy][carList[j].posx].ghost != 1){
+            carList[j].vitesse = road[carList[j].posy][carList[j].posx].vitesse;
+            if(carList[j].vitesse == 50){
+                carList[j].vitesse = 40;
+            }
+        }else if(carList[j].posy-scan_height == IA->posy && road[IA->posy-scan_height][carList[j].posx].ghost != 1){
+            carList[j].vitesse = road[carList[j].posy-scan_height][carList[j].posx].vitesse;
+        }
 
-if(road[IA->posy-scan_height][IA->posx].ghost == 0) {
+    }
+    if(road[IA->posy-scan_height][IA->posx].ghost == 0) {
 
+    	if(IA->posx==0 && road[IA->posy-scan_height][IA->posx+1].ghost == 1 && road[IA->posy][IA->posx+1].ghost != 0){
+    		move_player(1,IA);
+    		road[IA->posy][IA->posx]=*IA;
+    	}
 
-	for(j=0;j<nbCars;j++){if(carList[j].posy == IA->posy-scan_height && carList[j].posx == IA->posx){IA->vitesse = carList[j].vitesse;}}
+    	else if(IA->posx>0 && IA->posx<NB_VOIE_DEFAULT-1){
 
+    		if(road[IA->posy-scan_height][IA->posx+1].ghost == 1 && cmpt_D<cmpt_G && road[IA->posy][IA->posx+1].ghost == 1){
+    			move_player(2,IA);
+    			road[IA->posy][IA->posx]=*IA;
+    		}
+    		else if(road[IA->posy-scan_height][IA->posx-1].ghost == 1 && road[IA->posy][IA->posx-1].ghost != 0){
+    			move_player(IA->posx-1,IA);
+    			road[IA->posy][IA->posx]=*IA;
+    		}
 
-	if(IA->posx==0 && road[IA->posy-scan_height][IA->posx+1].ghost == 1 && road[IA->posy][IA->posx+1].ghost != 0){
-		move_player(1,IA);
-		road[IA->posy][IA->posx]=*IA;
-	}
+    	}
+    	else if(IA->posx == NB_VOIE_DEFAULT-1 && road[IA->posy-scan_height][IA->posx-1].ghost == 1 && road[IA->posy][IA->posx-1].ghost != 0){
+    		move_player(IA->posx-1,IA);
+    		road[IA->posy][IA->posx]=*IA;
 
-	else if(IA->posx>0 && IA->posx<NB_VOIE_DEFAULT-1){
+    	}else if((road[IA->posy-(scan_height)][IA->posx+1].ghost == 0 || road[IA->posy-(scan_height)][IA->posx-1].ghost ==0) && road[IA->posy-scan_height][IA->posx].ghost == 0){
+    		if(IA->posx == 2){
+    		      move_player(IA->posx-1,IA);
+    		      road[IA->posy][IA->posx]=*IA;
+    	   }else if(IA->posx == 0){
+    	           move_player(IA->posx+1,IA);
+    	           road[IA->posy][IA->posx]=*IA;
+            }
+        }
+    }    
+    if(road[IA->posy-(scan_height)][IA->posx].vitesse != IA->vitesse && nb_tour%5 == 0 ){
+    	   IA->vitesse=150;
+    }
+    for(j=0;j<nbCars;j++){
+        if(carList[j].posy == IA->posy-scan_height && carList[j].posx == IA->posx){
+            IA->vitesse = carList[j].vitesse;
+        }
+    }
+    if(IA->vitesse == 50 && nb_tour%5 == 0){
+        IA->vitesse = 40;
+    }
+    draw_car(IA);
 
-		if(road[IA->posy-scan_height][IA->posx+1].ghost == 1 && cmpt_D<cmpt_G && road[IA->posy][IA->posx+1].ghost == 1){
-			move_player(2,IA);
-			road[IA->posy][IA->posx]=*IA;
-		}
-		else if(road[IA->posy-scan_height][IA->posx-1].ghost == 1 && road[IA->posy][IA->posx-1].ghost != 0){
-			move_player(IA->posx-1,IA);
-			road[IA->posy][IA->posx]=*IA;
-		}
-
-	}
-	else if(IA->posx == NB_VOIE_DEFAULT-1 && road[IA->posy-scan_height][IA->posx-1].ghost == 1 && road[IA->posy][IA->posx-1].ghost != 0){
-		move_player(IA->posx-1,IA);
-		road[IA->posy][IA->posx]=*IA;
-
-	}/*else if((road[IA->posy-(scan_height)][IA->posx+1].ghost == 0 || road[IA->posy-(scan_height)][IA->posx-1].ghost ==0) && road[IA->posy-scan_height][IA->posx].ghost == 0){
-		if(IA->posx == 2){
-		move_player(IA->posx-1,IA);
-		road[IA->posy][IA->posx]=*IA;
-	}else if(IA->posx == 0){
-	move_player(IA->posx+1,IA);
-	road[IA->posy][IA->posx]=*IA;
-}
-}*/
-cmpt++;
-}
-if(road[IA->posy-(scan_height)][IA->posx].vitesse != IA->vitesse && cmpt%3 == 0){
-	IA->vitesse=150;
-}
+    
 }
 
 void print_menu(WINDOW *menu_win, int highlight){
